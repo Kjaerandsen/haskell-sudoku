@@ -25,7 +25,9 @@ source-repository head
 
 library
   exposed-modules:
+      GameLogic
       Lib
+      Solver
   other-modules:
       Paths_haskell_sudoku
   hs-source-dirs:

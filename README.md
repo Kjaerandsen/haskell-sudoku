@@ -2,6 +2,9 @@
 
 sudoku game created in haskell
 
+## Time tracking:
+1h planning the basic outline of the first version of the project. An auto-solver and a basic gameplay loop.
+
 ## Getting started
 
 To make it easy for you to get started with GitLab, here's a list of recommended next steps.
