@@ -82,9 +82,15 @@ printTile i = do
 -- >>> coordToArrSlot "A1"
 -- 0
 --
+-- >>> coordToArrSlot "Z2"
+-- -1
+--
+-- >>> coordToArrSlot "a"
+-- -1
+--
 
 -- | coordToArrSlot takes player coordinates from input and returns the array slot
--- to be occupied. Returns -1 if the input is invalid
+-- to be occupied. Returns -1 if the input is invalid.
 coordToArrSlot :: [Char] -> Int
 coordToArrSlot move = do
     let len = 9
@@ -109,3 +115,24 @@ coordToArrSlot move = do
                 (-1)
         else -- Default to -1 if invalid
             (-1)
+
+-- >>> toEnum 49::Char
+-- '1'
+--
+
+-- | checkMove takes an array slot, a piece, and the inital and winning board states
+-- returns 0 if the move is invalid, 1 if valid and 2 if valid, but wrong
+checkMove :: Int -> Int -> [Char] -> [Char] -> Int
+checkMove move piece boardInitial boardWin = do
+    if boardInitial!!move == '_' then
+        -- Check if the piece integer is equal to the value occupying the slot in the winning board
+        if (toEnum (piece+48)::Char) /= boardWin!!move then
+            -- 2 means the slot is available, and the move is correct
+            2
+        else
+            -- 1 means the slot is available, but the move is incorrect
+            1
+    else
+        -- 0 means the move is invalid, or the slot is occupied
+        0
+    
