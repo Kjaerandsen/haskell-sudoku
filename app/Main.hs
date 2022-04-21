@@ -19,7 +19,7 @@ gameLoopHard boardState boardInitial boardWin = do
     -- (Check for commands? -help, -q for quit)
     -- (if the first character is "-", use a helper function)
     let coordinates = coordToArrSlot inputLine
-    if coordinates < 0 && (length inputLine) < 4 then do
+    if coordinates < 0 || (length inputLine) < 4 then do
         printBoard boardState
         putStrLn "Error: invalid input. Please input coordinates or a valid command\nInput '-help' for instructions."
         gameLoopHard boardState boardInitial boardWin
@@ -29,6 +29,7 @@ gameLoopHard boardState boardInitial boardWin = do
         putStrLn "Successfull"
         -- Check the validity of the move
         putStrLn "Validity checking"
+        putStrLn (show coordinates)
         let validMove = checkMove coordinates moveSlot boardInitial boardWin
         putStrLn "Successfull"
         
@@ -36,7 +37,7 @@ gameLoopHard boardState boardInitial boardWin = do
         if validMove == 0 then do
             putStrLn "validMove was 0"
             printBoard boardState
-            putStrLn "Error: invalid move. The slot you tried to occupy is part of the puzzle start.\nInput '-help' for instructions."
+            putStrLn "Error: invalid move. The slot you tried to occupy is either part of the puzzle start, or the piece is invalid.\nInput '-help' for instructions."
             gameLoopHard boardState boardInitial boardWin
 
         -- Else perform the move and continue
