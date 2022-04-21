@@ -1,4 +1,4 @@
-module Lib
+module Solver
     ( someFunc
     ) where
 
