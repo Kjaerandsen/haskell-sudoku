@@ -1,6 +1,8 @@
 module GameLogic
     ( someFunc,
       printBoard,
+      checkMove,
+      coordToArrSlot
     ) where
 
 someFunc :: IO ()
@@ -116,17 +118,24 @@ coordToArrSlot move = do
         else -- Default to -1 if invalid
             (-1)
 
+
+-- | doMove takes the three board states, and a move and performs the move if it is valid
+--doMove :: Int -> Int -> [Char] -> [Char] -> [Char] -> [Char]
+--doMove move piece boardState boardInitial boardWin = do
+
+
+-- The convertion used in checkMove, from integer to char
 -- >>> toEnum 49::Char
 -- '1'
 --
 
 -- | checkMove takes an array slot, a piece, and the inital and winning board states
 -- returns 0 if the move is invalid, 1 if valid and 2 if valid, but wrong
-checkMove :: Int -> Int -> [Char] -> [Char] -> Int
+checkMove :: Int -> Char -> [Char] -> [Char] -> Int
 checkMove move piece boardInitial boardWin = do
     if boardInitial!!move == '_' then
         -- Check if the piece integer is equal to the value occupying the slot in the winning board
-        if (toEnum (piece+48)::Char) /= boardWin!!move then
+        if piece /= boardWin!!move then
             -- 2 means the slot is available, and the move is correct
             2
         else
@@ -135,4 +144,3 @@ checkMove move piece boardInitial boardWin = do
     else
         -- 0 means the move is invalid, or the slot is occupied
         0
-    
