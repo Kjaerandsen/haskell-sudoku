@@ -41,6 +41,7 @@ printLine arr = do
     else
         putStr "\n"
 
+
 -- | Prints the three chars in a tile
 -- called from printLine
 printTile :: [Char] -> IO()
@@ -51,3 +52,60 @@ printTile i = do
         printTile (tail i)
     else
         putStr "| "
+
+
+-- >>> read "1"::Int
+-- 1
+--
+-- >>> fromEnum 'i'
+-- 105
+--
+-- >>> fromEnum 'I'
+-- 73
+--
+-- >>> fromEnum '1'
+-- 49
+--
+-- >>> fromEnum '9'
+-- 57
+--
+
+-- >>> coordToArrSlot "B5"
+-- 13
+--
+-- >>> coordToArrSlot "b5"
+-- 13
+--
+-- >>> coordToArrSlot "i9"
+-- 80
+--
+-- >>> coordToArrSlot "A1"
+-- 0
+--
+
+-- | coordToArrSlot takes player coordinates from input and returns the array slot
+-- to be occupied. Returns -1 if the input is invalid
+coordToArrSlot :: [Char] -> Int
+coordToArrSlot move = do
+    let len = 9
+    let character = (fromEnum (move!!0))
+
+    -- Check that the input move is long enough
+    if length move < 2 then -- Default to -1 if invalid
+        (-1)
+    else do
+        -- Check if the integer is valid
+        let integer = ((fromEnum (move!!1)) - 49)
+        if integer < 10 && integer >= 0 then do
+            -- Check if the char is valid, convert 'a'/'A' to 1, 'b'/'B' to 2, etc.
+            -- Lowercase valid characters are in the range 97-105
+            if character > 96 && character < 106 then do
+                (len * (character-97)) + integer
+            else
+                -- Uppercase valid characters are in the range 65-73
+                if character > 64 && character < 74 then do
+                    (len * (character-65)) + integer
+                else -- Default to -1 if invalid
+                (-1)
+        else -- Default to -1 if invalid
+            (-1)
