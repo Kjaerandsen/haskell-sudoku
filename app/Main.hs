@@ -43,7 +43,7 @@ gameLoopHard boardState boardInitial boardWin = do
         else do 
             -- Update the board
             putStrLn "Updating the board"
-            let board = ((take (coordinates+1) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
+            let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
             putStrLn "Successfull"
             -- If winning move print the boardState and return
             if board == boardWin then do

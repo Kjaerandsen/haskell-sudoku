@@ -13,7 +13,7 @@ someFunc = putStrLn "someFunc"
 -- uses the helper function printLineByLine to print each line of the array
 printBoard :: [Char] -> IO()
 printBoard arr = do
-    putStrLn "    A B C   D E F   G H I\n   -----------------------"
+    putStrLn "    A B C   D E F   G H I\n   ------- ------- -------"
     printLineByLine arr 1
 
 -- | printLineByLine takes a line length and a line list and prints the list line by line
@@ -25,7 +25,7 @@ printLineByLine arr ctr = do
         putStr ((show ctr) ++ " | ")
         printLine (take len arr)
         if ctr `mod` 3 == 0 then do
-            putStrLn "   -----------------------"
+            putStrLn "   ------- ------- -------"
             printLineByLine (drop len arr) (ctr+1)
         else do
             printLineByLine (drop len arr) (ctr+1)
@@ -104,7 +104,7 @@ coordToArrSlot move = do
     else do
         -- Check if the integer is valid
         let integer = ((fromEnum (move!!1)) - 49)
-        if integer < 10 && integer >= 0 then do
+        if integer < 9 && integer >= 0 then do
             -- Check if the char is valid, convert 'a'/'A' to 1, 'b'/'B' to 2, etc.
             -- Lowercase valid characters are in the range 97-105
             if character > 96 && character < 106 then do
@@ -125,9 +125,11 @@ coordToArrSlot move = do
 
 
 -- The convertion used in checkMove, from integer to char
--- >>> toEnum 49::Char
--- '1'
+-- >>> toEnum 48::Char
+-- '0'
 --
+
+-- InputValidation function, checks if the input is valid (length and command / not)
 
 -- | checkMove takes an array slot, a piece, and the inital and winning board states
 -- returns 0 if the move is invalid, 1 if valid and 2 if valid, but wrong
@@ -135,12 +137,16 @@ checkMove :: Int -> Char -> [Char] -> [Char] -> Int
 checkMove move piece boardInitial boardWin = do
     if boardInitial!!move == '_' then
         -- Check if the piece integer is equal to the value occupying the slot in the winning board
-        if piece /= boardWin!!move then
+        if piece == boardWin!!move then
             -- 2 means the slot is available, and the move is correct
             2
-        else
-            -- 1 means the slot is available, but the move is incorrect
-            1
+        else do
+            -- Check if the piece is a valid piece
+            let pieceNum = fromEnum piece
+            if pieceNum > 48 && pieceNum < 58  then -- Incorrect move, valid slot and valid piece.
+                1
+            else -- Not a valid number, invalid response
+                0
     else
         -- 0 means the move is invalid, or the slot is occupied
         0
