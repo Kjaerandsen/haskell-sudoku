@@ -4,6 +4,7 @@ sudoku game created in haskell
 
 ## Time tracking:
 1h planning the basic outline of the first version of the project. An auto-solver and a basic gameplay loop.
+30m planning game loop structure.
 
 ## How to play
 
@@ -11,13 +12,15 @@ The goal of the game is to fill each row, column and 3 by 3 box with the numbers
 
 This means that each row needs to contain the numbers 1 through to 9.
 
-|___|76_|4__| --> |358|761|492|
+|---|76-|4--| --> |358|761|492|
 
 Same for each column and 3 by 3 square
 
-|4__|      |492|
+|4--|      |492|
+
 |518|  --> |518|
-|3__|      |376|
+
+|3--|      |376|
 
 ## Getting started
 
