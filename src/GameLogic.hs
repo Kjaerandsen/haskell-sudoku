@@ -59,8 +59,8 @@ printTile i = do
 -- >>> read "1"::Int
 -- 1
 --
--- >>> fromEnum 'i'
--- 105
+-- >>> fromEnum 'a'
+-- 97
 --
 -- >>> fromEnum 'I'
 -- 73
@@ -104,15 +104,15 @@ coordToArrSlot move = do
     else do
         -- Check if the integer is valid
         let integer = ((fromEnum (move!!1)) - 49)
-        if integer < 9 && integer >= 0 then do
+        if integer < 9 && integer > (-1) then do
             -- Check if the char is valid, convert 'a'/'A' to 1, 'b'/'B' to 2, etc.
             -- Lowercase valid characters are in the range 97-105
             if character > 96 && character < 106 then do
-                (len * (character-97)) + integer
+                ((len * integer) + character-97)
             else
                 -- Uppercase valid characters are in the range 65-73
                 if character > 64 && character < 74 then do
-                    (len * (character-65)) + integer
+                    ((len * integer) + character-65)
                 else -- Default to -1 if invalid
                 (-1)
         else -- Default to -1 if invalid
@@ -143,6 +143,7 @@ checkMove move piece boardInitial boardWin = do
         else do
             -- Check if the piece is a valid piece
             let pieceNum = fromEnum piece
+            -- Valid range for number 1 through to 9 is 49-57.
             if pieceNum > 48 && pieceNum < 58  then -- Incorrect move, valid slot and valid piece.
                 1
             else -- Not a valid number, invalid response
