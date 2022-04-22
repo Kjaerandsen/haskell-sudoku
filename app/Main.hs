@@ -20,38 +20,50 @@ gameLoopHard boardState boardInitial boardWin = do
     -- (if the first character is "-", use a helper function)
     let coordinates = coordToArrSlot inputLine
     if coordinates < 0 || (length inputLine) < 4 then do
-        printBoard boardState
-        putStrLn "Error: invalid input. Please input coordinates or a valid command\nInput '-help' for instructions."
-        gameLoopHard boardState boardInitial boardWin
-    else do
+
+        -- Check if the input is a parameter
+        if inputLine!!0 == '-' then do -- If it is a parameter check the parameter
+
+            -- take the first word from the inputline, check it against a case statement
+            case (words inputLine)!!0 of
+                "-help" -> do
+                    printBoard boardState
+                    putStrLn "-help"
+                    gameLoopHard boardState boardInitial boardWin
+                "-q" -> putStrLn "Exiting the program."
+                _ -> do
+                    printBoard boardState
+                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0)
+            
+        else do -- else simply recurse
+            printBoard boardState
+            putStrLn "Error: invalid input. Please input coordinates or a valid command\nInput '-help' for instructions."
+            gameLoopHard boardState boardInitial boardWin
+
+    else do -- check the piece (1..9)
         putStrLn "Trying to read the integer slot"
         let moveSlot = inputLine!!3
-        putStrLn "Successfull"
         -- Check the validity of the move
-        putStrLn "Validity checking"
         putStrLn (show coordinates)
         let validMove = checkMove coordinates moveSlot boardInitial boardWin
-        putStrLn "Successfull"
         
         -- If the move was invalid write an error message and recurse
         if validMove == 0 then do
-            putStrLn "validMove was 0"
-            printBoard boardState
+
             putStrLn "Error: invalid move. The slot you tried to occupy is either part of the puzzle start, or the piece is invalid.\nInput '-help' for instructions."
             gameLoopHard boardState boardInitial boardWin
 
-        -- Else perform the move and continue
-        else do 
+        
+        else do -- Else perform the move and continue
             -- Update the board
             putStrLn "Updating the board"
             let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
             putStrLn "Successfull"
-            -- If winning move print the boardState and return
-            if board == boardWin then do
+            
+            if board == boardWin then do -- If winning move print the boardState and a win message
                 printBoard board
                 putStrLn "GG, well played! You've beat this puzzle"
-                return ()
-            else do
-                -- Else print the board and recurse
+
+            else do -- Else print the board and recurse
                 printBoard board
                 gameLoopHard board boardInitial boardWin
