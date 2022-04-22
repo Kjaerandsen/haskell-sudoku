@@ -1,13 +1,8 @@
 module GameLogic
-    ( someFunc,
-      printBoard,
+    ( printBoard,
       checkMove,
       coordToArrSlot
     ) where
-
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
 
 -- | printBoard takes a board and prints it to the screen
 -- uses the helper function printLineByLine to print each line of the array
