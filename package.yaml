@@ -46,3 +46,7 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - haskell-sudoku
+    - hspec
+    - doctest
+    - QuickCheck
+    - HUnit
