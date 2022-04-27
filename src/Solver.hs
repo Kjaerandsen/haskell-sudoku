@@ -34,6 +34,21 @@ solve board = do
 
   -- Build an array of possible values horizontally
 
+-- >>> filter (`elem` [1,5,7]) [1..9]
+-- [1,5,7]
+--
+
+-- Using the example written by "https://stackoverflow.com/users/2253286/wit" from 
+-- https://stackoverflow.com/questions/22080176/haskell-filtering-but-keeping-the-filtered
+-- >>> remove f = filter (not . f)
+-- >>> remove (`elem` [1,5,7]) [1..9]
+-- [2,3,4,6,8,9]
+--
+
+  -- >>> [ x*y | x <- [2,5,10], y <- [8,10,11]]
+  -- [16,20,22,40,50,55,80,100,110]
+  --
+
   -- Build an array of possible values vertically
 
   -- Build an array of possible values in each 3x3 grid
