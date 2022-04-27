@@ -21,19 +21,47 @@ buildLineArr line = do
     [line,line]
 
 solve :: [Char] -> [Char]
-solve x = x
+solve board = do
+  board
+  -- Check if the input is validat
+  -- validateBoard board
+  -- validateBoardState board
 
--- >>> validateBoard ["x"]
--- (Error while loading modules for evaluation)
--- <BLANKLINE>
--- Failed, no modules loaded.
--- <no location info>: error:
---     module `main:Main' is defined in multiple files: n:\Skole\AdvancedProgramming\haskell-sudoku\app\Main.hs
---                                                      n:\Skole\AdvancedProgramming\haskell-sudoku\test\Spec.hs
+  -- Build an array of occupied tiles
+  --[if x != "_" then x | ]
+  -- List comprehension?
+
+
+  -- Build an array of possible values horizontally
+
+  -- Build an array of possible values vertically
+
+  -- Build an array of possible values in each 3x3 grid
+
+-- >>> buildOccupied "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" []
+-- [3,4,6,9,11,15,16,17,18,21,22,24,27,28,30,32,34,36,37,39,41,43,44,46,48,50,52,53,56,58,59,62,63,64,65,69,71,74,76,77]
 --
 
-validateBoard :: [Char] -> Bool
-validateBoard x = False
+-- | buildOccupied takes a board and returns a list of occupied slots on the board.
+buildOccupied :: [Char] -> [Int] -> [Int]
+buildOccupied x y = do
+  if (length x) /= 0 then do
+    if head x /= '_' then
+      buildOccupied (tail x) (y ++ [(81-(length x))])
+    else
+      buildOccupied (tail x) y
+  else
+    y
 
+-- >>> validateBoard "x"
+-- False
+--
+validateBoard :: [Char] -> Bool
+validateBoard board = False
+
+
+-- >>> validateBoardState "sa"
+-- False
+--
 validateBoardState :: [Char] -> Bool
-validateBoardState x = False
+validateBoardState board = False
