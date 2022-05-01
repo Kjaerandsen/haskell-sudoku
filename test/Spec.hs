@@ -53,3 +53,15 @@ testValidateBoardState = do
             validateBoardState "11_______________________________________________________________________________" `shouldBe` False
         it "conflict grid" $ do
             validateBoardState "1____________1___________________________________________________________________" `shouldBe` False
+
+testSolveVertical :: Spec
+testSolveVertical = do
+        describe "\nTests for the vertical solve subfunction" $ do
+        it "Basic puzzle one" $ do
+            solveVertical "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` [[3,9,8,7],[5,6,9,2,1],[8,4,2,3,1],[9,4,6,2],[3,5,7,4,9],[1,4,8,7],[7,1,8,9,6],[9,7,3,8,5],[2,6,3,4]]
+
+testSolveHorizontal :: Spec
+testSolveHorizontal = do
+        describe "\nTests for the horizontal solve subfunction" $ do
+        it "Basic puzzle one" $ do
+            solveHorizontal "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` [[3,5,8,1,9,2],[6,9,3,4],[9,4,8,7,6],[2,5,7,3],[3,7,1],[9,1,4,8],[8,2,4,9,3],[6,9,7,8],[7,1,2,6,5,4]]

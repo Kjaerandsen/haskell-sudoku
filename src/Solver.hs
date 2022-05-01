@@ -34,6 +34,40 @@ solve board = do
 
   -- Build an array of possible values horizontally
 
+  -- Vertically
+
+  -- In a box
+
+-- >>> solveHorizontal [0..81] []
+-- [[],[],[],[],[],[],[],[9],[1,2,3,4,5,6,7,8]]
+--
+
+-- >>> filter (`elem` [1..9]) [4..9]
+-- [4,5,6,7,8,9]
+--
+
+solveHorizontal :: [Int] -> [[Int]] -> [[Int]]
+solveHorizontal array output = do
+  -- First take a line if the size is large enough
+  if (length array) > 8 then do
+    let line = take 9 array
+    -- Create a list of possible values for the items in the line
+    let items = filter (`elem` [1..9]) line
+    -- recurse
+    solveHorizontal (drop 9 array) output ++ [items]
+  else do
+  -- If the array is empty return the output
+    output
+    
+
+-- >>> solveVertical "daw" [1,2]
+-- [[1,2,3],[1,2,3]]
+--
+solveVertical :: [Int] -> [[Int]] -> [[Int]]
+solveVertical a b = do
+  -- First take a line if the size is large enough
+  [[1,2,3],[1,2,3]]
+
 -- >>> filter (`elem` [1,5,7]) [1..9]
 -- [1,5,7]
 --
