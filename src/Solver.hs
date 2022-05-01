@@ -65,8 +65,36 @@ solveHorizontal array output = do
 --
 solveVertical :: [Int] -> [[Int]] -> [[Int]]
 solveVertical a b = do
-  -- First take a line if the size is large enough
-  [[1,2,3],[1,2,3]]
+  -- First roll the board to the left
+  let leftRoll = roll True a
+  -- Use the solveHorizontal function and roll the board to the right
+  solveHorizontal leftRoll []
+
+-- roll function that rolls the grid the provided direction, left if dir, else right
+roll :: Bool -> [Int] -> [Int]
+roll _ [] = []
+roll dir arr = rollRowsHelper arr dir (reverse [0..8]) -- Rotate the array and return it
+  
+
+-- | rollRowsHelper takes a grid and a offset list, returns the grid rotated, left if dir, else right
+rollRowsHelper :: [Int] -> Bool -> [Int] -> [Int]
+rollRowsHelper arr dir offset = do
+    if length offset /= 0 then
+        if dir then
+            (rollRowLeft 9 (head offset) 0 arr) ++ (rollRowsHelper arr dir (tail offset))
+        else
+            (rollRowsHelper arr dir (tail offset)) ++ reverse (rollRowLeft 9 (head  offset) 0 arr) 
+    else
+        []
+
+-- | rollRowLeft recursive function that rolls a single row left
+-- takes the row length and the whole grid, a deviation and a recursion counter as variables
+rollRowLeft :: Int -> Int -> Int -> [Int] -> [Int]
+rollRowLeft rowLen offSet recCount arr = do
+    if rowLen == recCount then
+        []
+    else
+        [arr!!((rowLen*recCount)+offSet)] ++ rollRowLeft rowLen offSet (recCount+1) arr
 
 -- >>> filter (`elem` [1,5,7]) [1..9]
 -- [1,5,7]
