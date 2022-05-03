@@ -16,6 +16,10 @@ main = do
     putStrLn "\nHspec tests:"
     hspec $ do
         testSolve
+        testValidateBoard
+        testValidateBoardState
+        testSolveHorizontal
+        testSolveVertical
 
 testSolve :: Spec
 testSolve =
@@ -54,14 +58,54 @@ testValidateBoardState = do
         it "conflict grid" $ do
             validateBoardState "1____________1___________________________________________________________________" `shouldBe` False
 
+
 testSolveVertical :: Spec
 testSolveVertical = do
         describe "\nTests for the vertical solve subfunction" $ do
-        it "Basic puzzle one" $ do
-            solveVertical "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` [[3,9,8,7],[5,6,9,2,1],[8,4,2,3,1],[9,4,6,2],[3,5,7,4,9],[1,4,8,7],[7,1,8,9,6],[9,7,3,8,5],[2,6,3,4]]
+            it "Basic puzzle one" $ do
+                solveVertical [0,0,0,7,6,0,4,0,0,
+                               2,0,7,0,0,0,5,1,8,
+                               1,0,0,5,2,0,3,0,0,
+                               6,8,0,1,0,9,0,4,0,
+                               5,4,0,8,0,2,0,6,9,
+                               0,7,0,3,0,6,0,2,5,
+                               0,0,6,0,1,5,0,0,7,
+                               4,3,5,0,0,0,2,0,1,
+                               0,0,9,0,8,3,0,0,0] 
+                               ([]::[[Int]]) 
+                               `shouldBe` 
+                               [[3,7,8,9],
+                               [1,2,5,6,9],
+                               [1,2,3,4,8],
+                               [2,4,6,9],
+                               [3,4,5,7,9],
+                               [1,4,7,8],
+                               [1,6,7,8,9],
+                               [3,5,7,8,9],
+                               [2,3,4,6]]
+
 
 testSolveHorizontal :: Spec
 testSolveHorizontal = do
         describe "\nTests for the horizontal solve subfunction" $ do
-        it "Basic puzzle one" $ do
-            solveHorizontal "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` [[3,5,8,1,9,2],[6,9,3,4],[9,4,8,7,6],[2,5,7,3],[3,7,1],[9,1,4,8],[8,2,4,9,3],[6,9,7,8],[7,1,2,6,5,4]]
+            it "Basic puzzle one" $ do
+                solveHorizontal [0,0,0,7,6,0,4,0,0,
+                                 2,0,7,0,0,0,5,1,8,
+                                 1,0,0,5,2,0,3,0,0,
+                                 6,8,0,1,0,9,0,4,0,
+                                 5,4,0,8,0,2,0,6,9,
+                                 0,7,0,3,0,6,0,2,5,
+                                 0,0,6,0,1,5,0,0,7,
+                                 4,3,5,0,0,0,2,0,1,
+                                 0,0,9,0,8,3,0,0,0] 
+                                 ([]::[[Int]]) 
+                                 `shouldBe` 
+                                 [[1,2,4,5,6,7],
+                                 [6,7,8,9],
+                                 [2,3,4,8,9],
+                                 [1,4,8,9],
+                                 [1,3,7],
+                                 [2,3,5,7],
+                                 [4,6,7,8,9],
+                                 [3,4,6,9],
+                                 [1,2,3,5,8,9]]
