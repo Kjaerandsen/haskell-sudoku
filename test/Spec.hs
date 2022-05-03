@@ -20,7 +20,7 @@ main = do
         testValidateBoardState
         testSolveHorizontal
         testSolveVertical
-        testSolveQubic
+        testSolveCubic
 
 testSolve :: Spec
 testSolve =
@@ -111,11 +111,11 @@ testSolveHorizontal = do
                                  [3,4,6,9],
                                  [1,2,3,5,8,9]]
 
-testSolveQubic :: Spec
-testSolveQubic = do
+testSolveCubic :: Spec
+testSolveCubic = do
         describe "\nTests for the cubic solve subfunction" $ do
             it "Basic puzzle one" $ do
-                solveQubic [0,0,0,7,6,0,4,0,0,
+                solveCubic [0,0,0,7,6,0,4,0,0,
                             2,0,7,0,0,0,5,1,8,
                             1,0,0,5,2,0,3,0,0,
                             6,8,0,1,0,9,0,4,0,
