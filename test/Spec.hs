@@ -113,7 +113,7 @@ testSolveHorizontal = do
 
 testSolveQubic :: Spec
 testSolveQubic = do
-        describe "\nTests for the horizontal solve subfunction" $ do
+        describe "\nTests for the cubic solve subfunction" $ do
             it "Basic puzzle one" $ do
                 solveQubic [0,0,0,7,6,0,4,0,0,
                             2,0,7,0,0,0,5,1,8,
@@ -124,7 +124,6 @@ testSolveQubic = do
                             0,0,6,0,1,5,0,0,7,
                             4,3,5,0,0,0,2,0,1,
                             0,0,9,0,8,3,0,0,0] 
-                            ([]::[[Int]]) 
                             `shouldBe` 
                             [[3,4,5,6,8,9],
                             [1,2,3,8,9],
