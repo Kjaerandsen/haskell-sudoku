@@ -2,8 +2,12 @@ module Solver
     ( someFunc,
       solve,
       validateBoard,
-      validateBoardState
+      validateBoardState,
+      solveHorizontal,
+      solveVertical
     ) where
+
+import Data.List
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -52,9 +56,9 @@ solveHorizontal array output = do
   if (length array) > 8 then do
     let line = take 9 array
     -- Create a list of possible values for the items in the line
-    let items = filter (`elem` [1..9]) line
+    let items = reverseFilter (`elem` line) [1..9]
     -- recurse
-    solveHorizontal (drop 9 array) output ++ [items]
+    solveHorizontal (drop 9 array) ((sort [items]) ++ output)
   else do
   -- If the array is empty return the output
     output
@@ -102,10 +106,19 @@ rollRowLeft rowLen offSet recCount arr = do
 
 -- Using the example written by "https://stackoverflow.com/users/2253286/wit" from 
 -- https://stackoverflow.com/questions/22080176/haskell-filtering-but-keeping-the-filtered
--- >>> remove f = filter (not . f)
--- >>> remove (`elem` [1,5,7]) [1..9]
+
+-- | reverseFilter takes a filter and returns the opposite of the filter (selects the opposite values)
+reverseFilter :: (a -> Bool) -> [a] -> [a]
+reverseFilter f = filter (not . f)
+
+-- >>> filter (`elem` [1,5,7]) [1..9]
+-- [1,5,7]
+--
+-- >>> reverseFilter (`elem` [1,5,7]) [1..9]
 -- [2,3,4,6,8,9]
 --
+
+
 
   -- >>> [ x*y | x <- [2,5,10], y <- [8,10,11]]
   -- [16,20,22,40,50,55,80,100,110]
