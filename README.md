@@ -12,15 +12,17 @@ The goal of the game is to fill each row, column and 3 by 3 box with the numbers
 
 This means that each row needs to contain the numbers 1 through to 9.
 
-|---|76-|4--| --> |358|761|492|
+||||  Solved ->  ||||
+| - | - | - | - | - | - | - |
+|---|76-|4--||358|761|492|
 
 Same for each column and 3 by 3 square
 
-|4--|      |492|
-
-|518|  --> |518|
-
-|3--|      |376|
+||  Solved ->  ||
+| - | - | - |
+|4--||492|
+|518||518|
+|3--||376|
 
 ## Getting started
 
