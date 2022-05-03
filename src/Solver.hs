@@ -4,7 +4,8 @@ module Solver
       validateBoard,
       validateBoardState,
       solveHorizontal,
-      solveVertical
+      solveVertical,
+      solveCubic
     ) where
 
 import Data.List
@@ -50,6 +51,38 @@ solve board = do
 -- [4,5,6,7,8,9]
 --
 
+-- | solveCubic takes a board, creates a list of the 3x3 boxes in the board
+-- then calculates the list of possible values for each box (not already occupied)
+solveCubic :: [Int] -> [[Int]]
+solveCubic board =
+  reverse (solveHorizontal (twoLevelInline (solveCubicHelper board [] 0) []) [])
+
+-- | twoLevelInline takes a double-leveled array and returns the items consecutively as a single level array.
+twoLevelInline :: [[a]] -> [a] -> [a]
+twoLevelInline twoLevelArray output= do
+  if length twoLevelArray > 0 then
+    twoLevelInline (drop 1 twoLevelArray) (output ++ twoLevelArray!!0)
+  else
+    output
+
+-- >>> solveCubicHelper [0,0,0,7,6,0,4,0,0,2,0,7,0,0,0,5,1,8,1,0,0,5,2,0,3,0,0,6,8,0,1,0,9,0,4,0,5,4,0,8,0,2,0,6,9,0,7,0,3,0,6,0,2,5,0,0,6,0,1,5,0,0,7,4,3,5,0,0,0,2,0,1,0,0,9,0,8,3,0,0,0] [] 0
+-- [[0,0,0,2,0,7,1,0,0],[7,6,0,0,0,0,5,2,0],[4,0,0,5,1,8,3,0,0],[6,8,0,5,4,0,0,7,0],[1,0,9,8,0,2,3,0,6],[0,4,0,0,6,9,0,2,5],[0,0,6,4,3,5,0,0,9],[0,1,5,0,0,0,0,8,3],[0,0,7,2,0,1,0,0,0]]
+--
+
+-- | solveCubicHelper takes a board, returns the 3x3 boxes in the board
+solveCubicHelper :: [Int] -> [[Int]] -> Int -> [[Int]]
+solveCubicHelper arr output counter = do
+  if length arr > 0 && counter == 3 then do
+    solveCubicHelper (drop 27 arr) (output) 0
+  else if length arr > 0 && counter < 3 then do
+    let offset = 3*counter
+    let addToOutput = [arr!!(0+offset),arr!!(1+offset),arr!!(2+offset),
+                       arr!!(9+offset),arr!!(10+offset),arr!!(11+offset),
+                       arr!!(18+offset),arr!!(19+offset),arr!!(20+offset)]
+    solveCubicHelper arr (output ++ [addToOutput]) (counter+1)
+  else
+    output
+
 solveHorizontal :: [Int] -> [[Int]] -> [[Int]]
 solveHorizontal array output = do
   -- First take a line if the size is large enough
@@ -74,6 +107,8 @@ solveVertical a b = do
   -- Use the solveHorizontal function and roll the board to the right
   solveHorizontal leftRoll []
 
+
+-- Roll functions are slightly modified version of the roll functions used in the haskell tick-tack-roll assignment
 -- roll function that rolls the grid the provided direction, left if dir, else right
 roll :: Bool -> [Int] -> [Int]
 roll _ [] = []
