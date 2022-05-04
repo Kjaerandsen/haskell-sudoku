@@ -9,6 +9,7 @@ module Solver
     ) where
 
 import Data.List
+import Data.Char
 
 someFunc :: IO ()
 someFunc = putStrLn "someFunc"
@@ -17,17 +18,60 @@ someFunc = putStrLn "someFunc"
 -- [[1,2,3],[1,2,3]]
 --
 
+-- >>> [if x == '_' then 0 else digitToInt x | x <- "___123456789____" ]
+-- [0,0,0,1,2,3,4,5,6,7,8,9,0,0,0,0]
+--
+
 buildLineArr :: [Int] -> [[Int]]
 buildLineArr line = do
     -- Read each individual integer present in the array.
-
     -- Fill each not-filled array slot with theese possible integers
     -- and the old filled slots with "0"
     [line,line]
 
-solve :: [Char] -> [Char]
+
+-- >>> solve "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+-- *** Exception: Prelude.!!: index too large
+-- [[3,8,9],[5,9],[3,8],[7],[6],[1,8],[4],[9],[2],[2],[9],[7],[4],[4],[4],[5],[1],[8],[1],[],[8],[5],[2],[4,7],[3],[8,9],[4,6],[6],[8],
+--
+
+-- repeat
+
+solve :: [Char] -> [[Int]]
 solve board = do
-  board
+  -- Board to integer using list comprehension
+  let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
+
+  let horizontally = solveHorizontal boardInt []
+  -- Update the board with the horizontal values if not occupied already
+  -- let updatedBoard = [if x /= 0 then horizontally!!0 else [x] | x <- boardInt]
+
+  --let board1 = firstCompare boardInt horizontally 0 []
+  let board1 = twoLevelInline [replicate 9 x | x <- horizontally] []
+
+  let vertically = solveVertical boardInt
+  -- Create a whole board from vertical values
+  let dvertically = vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically
+
+  let verticalAndHorizontal = [filter (`elem` dvertically!!i) (board1!!i) | i <- [0..80]]
+  -- [filter (`elem` dvertically!!i) board1!!i | i <- [0..80]]
+  -- [filter (`elem` x) y | x <- board1, y <- dvertically]
+
+  let cube = cubicToBoard (solveCubic boardInt) []
+
+  let verticalAndHorizontalAndCube = [filter (`elem` verticalAndHorizontal!!i) (cube!!i) | i <- [0..80]]
+
+  let comparedWithInitial = [if boardInt!!i /= 0 then [boardInt!!i] else verticalAndHorizontalAndCube!!i | i <- [0..80]]
+
+  --cube
+  comparedWithInitial
+  --verticalAndHorizontalAndCube
+  --board
+
+  -- >>> filter (`elem` [[1,2,3,5]]) [[1,2,3]]
+  -- []
+  --
+
   -- Check if the input is validat
   -- validateBoard board
   -- validateBoardState board
@@ -43,6 +87,19 @@ solve board = do
 
   -- In a box
 
+  -- Compare initial array with the horizontal arary
+
+  -- Compare result with the vertical array
+
+  -- Compare result with the cubic array
+
+firstCompare :: [Int] -> [[Int]] -> Int -> [[Int]] -> [[Int]]
+firstCompare board moves counter output = do
+  if counter < 9 then do
+    firstCompare (drop 9 board) moves (counter+1) (output ++ [if x /= 0 then moves!!counter else [x] | x <- (take 9 board)])
+  else
+    output
+
 -- >>> solveHorizontal [0..81] []
 -- [[],[],[],[],[],[],[],[9],[1,2,3,4,5,6,7,8]]
 --
@@ -51,11 +108,19 @@ solve board = do
 -- [4,5,6,7,8,9]
 --
 
+-- | cubicToBoard takes the data from solveCubic and converts it to a board for comparisons in the solve function
+cubicToBoard :: [[Int]] -> [[Int]] -> [[Int]]
+cubicToBoard input output = do
+  if length input > 0 then do
+    cubicToBoard (drop 3 input) (output ++ twoLevelInline (replicate 3 ((twoLevelInline(replicate 3 [input!!0]) []) ++ (twoLevelInline(replicate 3 [input!!1]) []) ++ (twoLevelInline(replicate 3 [input!!2]) []))) [])
+  else
+    output
+
 -- | solveCubic takes a board, creates a list of the 3x3 boxes in the board
 -- then calculates the list of possible values for each box (not already occupied)
 solveCubic :: [Int] -> [[Int]]
 solveCubic board =
-  reverse (solveHorizontal (twoLevelInline (solveCubicHelper board [] 0) []) [])
+  solveHorizontal (twoLevelInline (solveCubicHelper board [] 0) []) []
 
 -- | twoLevelInline takes a double-leveled array and returns the items consecutively as a single level array.
 twoLevelInline :: [[a]] -> [a] -> [a]
@@ -83,6 +148,9 @@ solveCubicHelper arr output counter = do
   else
     output
 
+-- >>> solveHorizontal [0,0,0,7,6,0,4,0,0] []
+-- [[1,2,3,5,8,9]]
+--
 solveHorizontal :: [Int] -> [[Int]] -> [[Int]]
 solveHorizontal array output = do
   -- First take a line if the size is large enough
@@ -91,7 +159,7 @@ solveHorizontal array output = do
     -- Create a list of possible values for the items in the line
     let items = reverseFilter (`elem` line) [1..9]
     -- recurse
-    solveHorizontal (drop 9 array) ((sort [items]) ++ output)
+    solveHorizontal (drop 9 array) (output ++ (sort [items]))
   else do
   -- If the array is empty return the output
     output
@@ -100,12 +168,14 @@ solveHorizontal array output = do
 -- >>> solveVertical "daw" [1,2]
 -- [[1,2,3],[1,2,3]]
 --
-solveVertical :: [Int] -> [[Int]] -> [[Int]]
-solveVertical a b = do
+
+-- | solveVertical takes a board, returns an array of the possible values for each vertical line
+solveVertical :: [Int] -> [[Int]]
+solveVertical a = do
   -- First roll the board to the left
   let leftRoll = roll True a
   -- Use the solveHorizontal function and roll the board to the right
-  solveHorizontal leftRoll []
+  reverse (solveHorizontal leftRoll [])
 
 
 -- Roll functions are slightly modified version of the roll functions used in the haskell tick-tack-roll assignment
