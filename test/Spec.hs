@@ -15,7 +15,7 @@ main = do
     doctest ["-isrc", "app/Main.hs"]
     putStrLn "\nHspec tests:"
     hspec $ do
-        testSolve
+        --testSolve
         testValidateBoard
         testValidateBoardState
         testSolveHorizontal
@@ -73,7 +73,6 @@ testSolveVertical = do
                                0,0,6,0,1,5,0,0,7,
                                4,3,5,0,0,0,2,0,1,
                                0,0,9,0,8,3,0,0,0] 
-                               ([]::[[Int]]) 
                                `shouldBe` 
                                [[3,7,8,9],
                                [1,2,5,6,9],
@@ -101,15 +100,15 @@ testSolveHorizontal = do
                                  0,0,9,0,8,3,0,0,0] 
                                  ([]::[[Int]]) 
                                  `shouldBe` 
-                                 [[1,2,4,5,6,7],
-                                 [6,7,8,9],
-                                 [2,3,4,8,9],
-                                 [1,4,8,9],
-                                 [1,3,7],
-                                 [2,3,5,7],
-                                 [4,6,7,8,9],
+                                 [[1,2,3,5,8,9],
                                  [3,4,6,9],
-                                 [1,2,3,5,8,9]]
+                                 [4,6,7,8,9],
+                                 [2,3,5,7],
+                                 [1,3,7],
+                                 [1,4,8,9],
+                                 [2,3,4,8,9],
+                                 [6,7,8,9],
+                                 [1,2,4,5,6,7]]
 
 testSolveCubic :: Spec
 testSolveCubic = do
