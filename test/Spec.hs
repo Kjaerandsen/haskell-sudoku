@@ -15,7 +15,7 @@ main = do
     doctest ["-isrc", "app/Main.hs"]
     putStrLn "\nHspec tests:"
     hspec $ do
-        --testSolve
+        testSolve
         testValidateBoard
         testValidateBoardState
         testSolveHorizontal

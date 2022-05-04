@@ -31,25 +31,51 @@ buildLineArr line = do
 
 
 -- >>> solve "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
--- *** Exception: Prelude.!!: index too large
--- [[3,8,9],[5,9],[3,8],[7],[6],[1,8],[4],[9],[2],[2],[9],[7],[4],[4],[4],[5],[1],[8],[1],[],[8],[5],[2],[4,7],[3],[8,9],[4,6],[6],[8],
+-- "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+--
+-- >>> [[1],[2,3]]!!0
+-- [1]
 --
 
--- repeat
+-- >>> chr (48 + 9)
+-- '9'
+--
 
-solve :: [Char] -> [[Int]]
+solve :: [Char] -> [Char]
 solve board = do
   -- Board to integer using list comprehension
   let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
 
-  let horizontally = solveHorizontal boardInt []
-  -- Update the board with the horizontal values if not occupied already
-  -- let updatedBoard = [if x /= 0 then horizontally!!0 else [x] | x <- boardInt]
+  let answer = solveLoopHelper boardInt
 
-  --let board1 = firstCompare boardInt horizontally 0 []
+  [if x == 0 then '_' else chr (48 + x) | x <- answer]
+  --verticalAndHorizontalAndCube
+  --board
+
+solveLoopHelper :: [Int] -> [Int]
+solveLoopHelper board = do
+  let board2 = solveLoop board
+  if mySignature 0 board2 /= 0 && board2 /= board then
+    solveLoopHelper board2
+  else
+    board2
+
+-- Retrieved from haskell assignment 1
+-- MySignature function, uses list comprehension to go through each element of the input list, comparing it to
+-- the signature and returning the number of occurrences
+mySignature :: Eq a => a -> [a] -> Int
+mySignature z xs = sum [if z == x then 1 else 0 | x <- xs]
+
+solveLoop :: [Int] -> [Int]
+solveLoop board = do
+  let horizontally = solveHorizontal board []
+  -- Update the board with the horizontal values if not occupied already
+  -- let updatedBoard = [if x /= 0 then horizontally!!0 else [x] | x <- board]
+
+  --let board1 = firstCompare board horizontally 0 []
   let board1 = twoLevelInline [replicate 9 x | x <- horizontally] []
 
-  let vertically = solveVertical boardInt
+  let vertically = solveVertical board
   -- Create a whole board from vertical values
   let dvertically = vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically
 
@@ -57,16 +83,16 @@ solve board = do
   -- [filter (`elem` dvertically!!i) board1!!i | i <- [0..80]]
   -- [filter (`elem` x) y | x <- board1, y <- dvertically]
 
-  let cube = cubicToBoard (solveCubic boardInt) []
+  let cube = cubicToBoard (solveCubic board) []
 
   let verticalAndHorizontalAndCube = [filter (`elem` verticalAndHorizontal!!i) (cube!!i) | i <- [0..80]]
 
-  let comparedWithInitial = [if boardInt!!i /= 0 then [boardInt!!i] else verticalAndHorizontalAndCube!!i | i <- [0..80]]
+  let comparedWithInitial = [if board!!i /= 0 then [board!!i] else verticalAndHorizontalAndCube!!i | i <- [0..80]]
 
   --cube
-  comparedWithInitial
-  --verticalAndHorizontalAndCube
-  --board
+
+  let updated2 = [ if length(comparedWithInitial!!i) == 1 then (comparedWithInitial!!i)!!0 else board!!i | i <- [0..80]]
+  updated2
 
   -- >>> filter (`elem` [[1,2,3,5]]) [[1,2,3]]
   -- []
