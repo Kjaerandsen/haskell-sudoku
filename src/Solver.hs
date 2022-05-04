@@ -66,33 +66,30 @@ solveLoopHelper board = do
 mySignature :: Eq a => a -> [a] -> Int
 mySignature z xs = sum [if z == x then 1 else 0 | x <- xs]
 
+-- | solveLoop single level loop for solving sudoku puzzles. Returns the solved board as an integer,
+-- or if unable to solve return the progress made.
 solveLoop :: [Int] -> [Int]
 solveLoop board = do
   let horizontally = solveHorizontal board []
-  -- Update the board with the horizontal values if not occupied already
-  -- let updatedBoard = [if x /= 0 then horizontally!!0 else [x] | x <- board]
 
-  --let board1 = firstCompare board horizontally 0 []
-  let board1 = twoLevelInline [replicate 9 x | x <- horizontally] []
-
+  -- Creates a board with the possible values of each line 
+  -- each line has 9 repeats of the possible values as this is the return from the horizontal function
+  let board1 = twoLevelInLine [replicate 9 x | x <- horizontally] []
+  
+  -- Get the same for vertical
   let vertically = solveVertical board
   -- Create a whole board from vertical values
-  let dvertically = vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically ++ vertically
-
+  let dvertically = twoLevelInLine (replicate 9 vertically) []
+  -- Combine vertical and horizontal boards, only keep the cross product (if both contain a digit keep it, else discard it)
   let verticalAndHorizontal = [filter (`elem` dvertically!!i) (board1!!i) | i <- [0..80]]
-  -- [filter (`elem` dvertically!!i) board1!!i | i <- [0..80]]
-  -- [filter (`elem` x) y | x <- board1, y <- dvertically]
-
+  -- Create a board for cubic values
   let cube = cubicToBoard (solveCubic board) []
-
+  -- Combine the result with the cubic board
   let verticalAndHorizontalAndCube = [filter (`elem` verticalAndHorizontal!!i) (cube!!i) | i <- [0..80]]
-
+  -- Combine with the initial board (values in the initial board replace the calculated values)
   let comparedWithInitial = [if board!!i /= 0 then [board!!i] else verticalAndHorizontalAndCube!!i | i <- [0..80]]
-
-  --cube
-
-  let updated2 = [ if length(comparedWithInitial!!i) == 1 then (comparedWithInitial!!i)!!0 else board!!i | i <- [0..80]]
-  updated2
+  -- Finally only keep the calculated values if they only contain a single choice for the slot
+  [if length(comparedWithInitial!!i) == 1 then (comparedWithInitial!!i)!!0 else board!!i | i <- [0..80]]
 
   -- >>> filter (`elem` [[1,2,3,5]]) [[1,2,3]]
   -- []
@@ -138,7 +135,7 @@ firstCompare board moves counter output = do
 cubicToBoard :: [[Int]] -> [[Int]] -> [[Int]]
 cubicToBoard input output = do
   if length input > 0 then do
-    cubicToBoard (drop 3 input) (output ++ twoLevelInline (replicate 3 ((twoLevelInline(replicate 3 [input!!0]) []) ++ (twoLevelInline(replicate 3 [input!!1]) []) ++ (twoLevelInline(replicate 3 [input!!2]) []))) [])
+    cubicToBoard (drop 3 input) (output ++ twoLevelInLine (replicate 3 ((twoLevelInLine(replicate 3 [input!!0]) []) ++ (twoLevelInLine(replicate 3 [input!!1]) []) ++ (twoLevelInLine(replicate 3 [input!!2]) []))) [])
   else
     output
 
@@ -146,13 +143,13 @@ cubicToBoard input output = do
 -- then calculates the list of possible values for each box (not already occupied)
 solveCubic :: [Int] -> [[Int]]
 solveCubic board =
-  solveHorizontal (twoLevelInline (solveCubicHelper board [] 0) []) []
+  solveHorizontal (twoLevelInLine (solveCubicHelper board [] 0) []) []
 
--- | twoLevelInline takes a double-leveled array and returns the items consecutively as a single level array.
-twoLevelInline :: [[a]] -> [a] -> [a]
-twoLevelInline twoLevelArray output= do
+-- | twoLevelInLine takes a double-leveled array and returns the items consecutively as a single level array.
+twoLevelInLine :: [[a]] -> [a] -> [a]
+twoLevelInLine twoLevelArray output= do
   if length twoLevelArray > 0 then
-    twoLevelInline (drop 1 twoLevelArray) (output ++ twoLevelArray!!0)
+    twoLevelInLine (drop 1 twoLevelArray) (output ++ twoLevelArray!!0)
   else
     output
 
