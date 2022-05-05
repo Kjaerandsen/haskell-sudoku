@@ -38,7 +38,7 @@ testSolve =
 
 testValidateBoard :: Spec
 testValidateBoard = do    
-    describe "\nTests for the sudoku board auto solver" $ do
+    describe "\nTests for the sudoku board validation" $ do
         it "valid board" $ do
             validateBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` True
         it "invalid length" $ do
@@ -49,8 +49,8 @@ testValidateBoard = do
 
 testValidateBoardState :: Spec
 testValidateBoardState = do
-    describe "\nTests for the sudoku board auto solver" $ do
-        it "Basic puzzle one, valid" $ do
+    describe "\nTests for the sudoku board state validation" $ do
+        it "Basic puzzle one, valid state" $ do
             validateBoardState "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" `shouldBe` True
         it "conflict vertical" $ do
             validateBoardState "1________1_______________________________________________________________________" `shouldBe` False
