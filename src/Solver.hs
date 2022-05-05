@@ -1,6 +1,5 @@
 module Solver
-    ( someFunc,
-      solve,
+    ( solve,
       validateBoard,
       validateBoardState,
       solveHorizontal,
@@ -11,47 +10,27 @@ module Solver
 import Data.List
 import Data.Char
 
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
-
--- >>> buildLineArr [1,2,3]
--- [[1,2,3],[1,2,3]]
---
-
--- >>> [if x == '_' then 0 else digitToInt x | x <- "___123456789____" ]
--- [0,0,0,1,2,3,4,5,6,7,8,9,0,0,0,0]
---
-
-buildLineArr :: [Int] -> [[Int]]
-buildLineArr line = do
-    -- Read each individual integer present in the array.
-    -- Fill each not-filled array slot with theese possible integers
-    -- and the old filled slots with "0"
-    [line,line]
-
 
 -- >>> solve "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
 -- "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
---
--- >>> [[1],[2,3]]!!0
--- [1]
---
-
--- >>> chr (48 + 9)
--- '9'
 --
 
 -- | solve function takes a board and returns it solved if it is solvable with a "single level" ai
 solve :: [Char] -> [Char]
 solve board = do
-  -- Board to integer using list comprehension
-  let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
+  -- First validate the board
+  if (validateBoard board) /= True then
+    ""
+  else do
+    -- Board to integer using list comprehension
+    let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
 
-  let answer = solveLoopHelper boardInt
+    let answer = solveLoopHelper boardInt
 
-  [if x == 0 then '_' else chr (48 + x) | x <- answer]
-  --verticalAndHorizontalAndCube
-  --board
+    [if x == 0 then '_' else chr (48 + x) | x <- answer]
+    --verticalAndHorizontalAndCube
+    --board
+
 
 -- | solveLoopHelper runs the solveLoop for the solve function until complete, or no progress can be made
 -- then returns the updated board
@@ -221,14 +200,19 @@ buildOccupied x y = do
     y
 
 -- >>> validateBoard "x"
+-- >>> validateBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
 -- False
+-- True
 --
+
+-- | validateBoard takes a board and validates its content charcters and its length
 validateBoard :: [Char] -> Bool
-validateBoard board = False
+validateBoard board = 
+  if length (reverseFilter (`elem` "0123456789_") board) /= 0 || length board /= 81 then
+    False
+  else
+    True
 
 
--- >>> validateBoardState "sa"
--- False
---
 validateBoardState :: [Char] -> Bool
 validateBoardState board = False
