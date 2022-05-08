@@ -177,6 +177,7 @@ cubicToBoard input output = do
   else
     output
 
+
 -- Using the example written by "https://stackoverflow.com/users/2253286/wit" from 
 -- https://stackoverflow.com/questions/22080176/haskell-filtering-but-keeping-the-filtered
 -- | reverseFilter takes a filter and returns the opposite of the filter (selects the opposite values)
@@ -188,6 +189,7 @@ reverseFilter f = filter (not . f)
 -- [3,4,6,9,11,15,16,17,18,21,22,24,27,28,30,32,34,36,37,39,41,43,44,46,48,50,52,53,56,58,59,62,63,64,65,69,71,74,76,77]
 --
 
+
 -- | buildOccupied takes a board and returns a list of occupied slots on the board.
 buildOccupied :: [Char] -> [Int] -> [Int]
 buildOccupied x y = do
@@ -198,6 +200,7 @@ buildOccupied x y = do
       buildOccupied (tail x) y
   else
     y
+
 
 -- >>> validateBoard "x"
 -- >>> validateBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
@@ -214,5 +217,66 @@ validateBoard board =
     True
 
 
+-- | Checks if a vertical or horizontal line contains duplicates, as well as 3x3 squares.
+-- returns true if no conflicts, false if any conflicts
 validateBoardState :: [Char] -> Bool
-validateBoardState board = False
+validateBoardState board = do
+  -- Board to integer using list comprehension
+  let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
+  -- Get, and check the Horizontal lines
+  
+  if validateValueLists (validateHorizontal boardInt []) /= True then
+    False
+  else if validateValueLists (validateHorizontal (roll True boardInt) []) /= True then
+    False
+  else if validateValueLists (validateHorizontal (twoLevelInLine (solveCubicHelper boardInt [] 0) []) []) /= True then
+    False
+  else
+    True
+
+-- >>> [if x == '_' then 0 else digitToInt x | x <- "11_______________________________________________________________________________" ]
+-- >>> [if x == '_' then 0 else digitToInt x | x <- "1________1_______________________________________________________________________" ]
+-- >>> [if x == '_' then 0 else digitToInt x | x <- "1_________1______________________________________________________________________" ]
+-- [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+-- [1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+-- [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+--
+
+-- >>> roll True [1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+-- [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0]
+-- >>> twoLevelInLine (solveCubicHelper [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] [] 0) []
+-- [1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+--
+
+-- | validateHorizontal goes through a board and returns the a list of the values for each group of nine tiles, exluding 0's
+validateHorizontal :: [Int] -> [[Int]] -> [[Int]]
+validateHorizontal array output = do
+  -- First take a line if the size is large enough
+  if (length array) > 8 then do
+    let line = take 9 array
+    -- Create a list of possible values for the items in the line
+    let items = filter (`elem` [1..9]) line
+    -- recurse
+    validateHorizontal (drop 9 array) (output ++ (sort [items]))
+  else do
+  -- If the array is empty return the output
+    output
+
+
+-- | validateValueLists takes a list of the values per line/cube of a board
+-- returns a bool corresponding to if there are any conflicts in the input
+validateValueLists :: [[Int]] -> Bool
+validateValueLists input = do
+  -- If there is an element
+  if length input > 0 then do
+    -- Check it
+    -- Based on minMax function from countBirds in haskell assignment 2
+    let sortedByValue = map length (group (sort (head input)))
+    -- If any duplicate values return false, else recurse
+    if (length (filter (>1) sortedByValue)) > 0 then
+      False
+    else
+      validateValueLists (tail input)
+  -- If there are no elements left return true
+  else
+    True
