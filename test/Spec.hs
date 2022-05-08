@@ -57,7 +57,7 @@ testValidateBoardState = do
         it "conflict horizontal" $ do
             validateBoardState "11_______________________________________________________________________________" `shouldBe` False
         it "conflict grid" $ do
-            validateBoardState "1____________1___________________________________________________________________" `shouldBe` False
+            validateBoardState "1_________1______________________________________________________________________" `shouldBe` False
 
 
 testSolveVertical :: Spec
