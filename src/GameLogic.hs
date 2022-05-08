@@ -8,7 +8,7 @@ module GameLogic
 -- uses the helper function printLineByLine to print each line of the array
 printBoard :: [Char] -> IO()
 printBoard arr = do
-  putStrLn "  A B C   D E F   G H I\n   ------- ------- -------"
+  putStrLn "    A B C   D E F   G H I\n   ------- ------- -------"
   printLineByLine arr 1
 
 -- | printLineByLine takes a line length and a line list and prints the list line by line
