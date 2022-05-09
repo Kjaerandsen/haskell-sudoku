@@ -26,6 +26,7 @@ source-repository head
 library
   exposed-modules:
       GameLogic
+      GameLoop
       Lib
       Solver
   other-modules:
