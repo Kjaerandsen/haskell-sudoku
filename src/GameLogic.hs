@@ -55,39 +55,31 @@ printTile i = do
 
 
 -- >>> read "1"::Int
--- 1
---
 -- >>> fromEnum 'a'
--- 97
---
 -- >>> fromEnum 'I'
--- 73
---
 -- >>> fromEnum '1'
--- 49
---
 -- >>> fromEnum '9'
+-- 1
+-- 97
+-- 73
+-- 49
 -- 57
 --
 
 -- >>> coordToArrSlot "B5"
--- 13
---
--- >>> coordToArrSlot "b5"
--- 13
---
--- >>> coordToArrSlot "i9"
--- 80
---
--- >>> coordToArrSlot "A1"
--- 0
---
 -- >>> coordToArrSlot "Z2"
--- -1
---
+-- >>> coordToArrSlot "b5"
+-- >>> coordToArrSlot "i9"
+-- >>> coordToArrSlot "A1"
 -- >>> coordToArrSlot "a"
+-- 37
+-- -1
+-- 37
+-- 80
+-- 0
 -- -1
 --
+
 
 -- | coordToArrSlot takes player coordinates from input and returns the array slot
 -- to be occupied. Returns -1 if the input is invalid.
@@ -117,17 +109,11 @@ coordToArrSlot move = do
       (-1)
 
 
--- | doMove takes the three board states, and a move and performs the move if it is valid
---doMove :: Int -> Int -> [Char] -> [Char] -> [Char] -> [Char]
---doMove move piece boardState boardInitial boardWin = do
-
-
 -- The convertion used in checkMove, from integer to char
 -- >>> toEnum 48::Char
 -- '0'
 --
 
--- InputValidation function, checks if the input is valid (length and command / not)
 
 -- | checkMove takes an array slot, a piece, and the inital and winning board states
 -- returns 0 if the move is invalid, 1 if valid and 2 if valid, but wrong
