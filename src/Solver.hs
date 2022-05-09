@@ -27,9 +27,8 @@ solve board = do
 
     let answer = solveLoopHelper boardInt
 
+    -- Convert integer board back to char board
     [if x == 0 then '_' else chr (48 + x) | x <- answer]
-    --verticalAndHorizontalAndCube
-    --board
 
 
 -- | solveLoopHelper runs the solveLoop for the solve function until complete, or no progress can be made
