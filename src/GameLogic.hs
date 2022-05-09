@@ -1,8 +1,11 @@
 module GameLogic
   ( printBoard,
     checkMove,
-    coordToArrSlot
+    checkMoveUN,
+    coordToArrSlot,
   ) where
+
+import Solver
 
 -- | printBoard takes a board and prints it to the screen
 -- uses the helper function printLineByLine to print each line of the array
@@ -143,6 +146,30 @@ checkMove move piece boardInitial boardWin = do
         1
       else -- Not a valid number, invalid response
         0
+  else
+    -- 0 means the move is invalid, or the slot is occupied
+    0
+
+
+-- | checkMove takes an array slot, a piece, and the inital board and current board states
+-- returns 0 if the move is invalid, 1 if it is valid, 2 if it is valid, but incorrect 
+-- (using the validateBoardState function)
+checkMoveUN :: Int -> Char -> [Char] -> [Char] -> Int
+checkMoveUN move piece boardInitial boardCurrent = do
+  if boardInitial!!move == '_' then do
+    -- Check if the piece is a valid piece
+    let pieceNum = fromEnum piece
+    -- Valid range for number 1 through to 9 is 49-57.
+    if pieceNum > 48 && pieceNum < 58  then do-- valid slot and valid piece.
+      -- Create a board with the move performed
+      let board = ((take (move) boardCurrent) ++ [piece] ++ (drop (move+1) boardCurrent))
+      -- Check it with basic board state validation
+      if validateBoardState board then -- Move is valid to a basic test
+        2
+      else -- Move is valid, but incorrect according to the current board state
+        1
+    else -- Not a valid number, invalid response
+      0
   else
     -- 0 means the move is invalid, or the slot is occupied
     0
