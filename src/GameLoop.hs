@@ -80,7 +80,8 @@ gameLoopEasy boardState boardInitial boardWin = do
             case (words inputLine)!!0 of
                 "-help" -> do
                     printBoard boardState
-                    putStrLn "-help"
+                    putStrLn "Input your move using coordinates. For example A1 3."
+                    putStrLn "Use -q to quit, -r to restart to the initial puzzle state and -help for this message."
                     gameLoopEasy boardState boardInitial boardWin
                 "-q" -> putStrLn "Exiting the program."
                 "-r" -> do
@@ -149,7 +150,8 @@ gameLoopHard boardState boardInitial boardWin = do
             case (words inputLine)!!0 of
                 "-help" -> do
                     printBoard boardState
-                    putStrLn "-help"
+                    putStrLn "Input your move using coordinates. For example A1 3."
+                    putStrLn "Use -q to quit, -r to restart to the initial puzzle state and -help for this message."
                     gameLoopHard boardState boardInitial boardWin
                 "-q" -> putStrLn "Exiting the program."
                 "-r" -> do
@@ -215,7 +217,8 @@ gameLoopHardUN boardState boardInitial = do
             case (words inputLine)!!0 of
                 "-help" -> do
                     printBoard boardState
-                    putStrLn "-help"
+                    putStrLn "Input your move using coordinates. For example A1 3."
+                    putStrLn "Use -q to quit, -r to restart to the initial puzzle state and -help for this message."
                     gameLoopHardUN boardState boardInitial
                 "-q" -> putStrLn "Exiting the program."
                 "-r" -> do
@@ -279,7 +282,8 @@ gameLoopEasyUN boardState boardInitial = do
             case (words inputLine)!!0 of
                 "-help" -> do
                     printBoard boardState
-                    putStrLn "-help"
+                    putStrLn "Input your move using coordinates. For example A1 3."
+                    putStrLn "Use -q to quit, -r to restart to the initial puzzle state and -help for this message."
                     gameLoopEasyUN boardState boardInitial
                 "-q" -> putStrLn "Exiting the program."
                 "-r" -> do
