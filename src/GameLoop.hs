@@ -11,6 +11,12 @@ module GameLoop
 import Solver
 import GameLogic
 
+
+-- | startGame function, allows a user to select a stage and a difficulty.
+--startGame :: IO()
+--startGame = do
+
+
 -- | startGameUNHelper helper function for starting the game with a user input board. Validates the board and
 -- allows difficulty selection.
 startGameUNHelper :: [Char] -> IO()

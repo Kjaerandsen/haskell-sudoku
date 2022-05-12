@@ -18,7 +18,14 @@ main = do
         --putStrLn (twoLevelInLine args [])
         case (args!!0) of
             -- Help should explain the other commands better.
-            "-help" -> putStrLn "Available commands are -help, -hard, -easy, -solve"
+            "-help" -> do
+                putStrLn "Available commands are -help, -play, -board and -solve"
+                putStrLn "-help shows this help message."
+                putStrLn "-play opens the local play menu which allows the user to select a stage and difficulty."
+                putStrLn "-board allows a user to input their own board as a second argument example:"
+                putStrLn "-board ___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+                putStrLn "The user can then select a difficulty and play with the board."
+                putStrLn "-solve also takes a user input which is a board. Returns the board solved."
             -- Hard might be benefitial to have more arguments aftewards.
             "-hard" -> do
                 printBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
