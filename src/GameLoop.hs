@@ -1,10 +1,39 @@
 module GameLoop 
     ( 
-        gameLoopHard 
+        gameLoopHard,
+        gameLoopEasy,
+        gameLoopHardUN,
+        gameLoopEasyUN,
+        startGameUN,
+        startGameUNHelper
     ) where
 
 import Solver
 import GameLogic
+
+-- | startGameUNHelper helper function for starting the game with a user input board. Validates the board and
+-- allows difficulty selection.
+startGameUNHelper :: [Char] -> IO()
+startGameUNHelper board = do
+    putStrLn "Which difficulty do you want to play with? 1 for easy, 2 for hard."
+    inputLine <- getLine
+
+    if inputLine!!0 /= '1' && inputLine!!0 /= '2' then do
+        putStrLn "Invalid input"
+        startGameUNHelper board
+    else do
+        -- Convert the input to 0 or 1
+        let difficulty = fromEnum (inputLine!!0) - 49
+
+        -- Check if the board is valid
+        if validateBoard board then
+            -- Start the game
+            startGameUN board difficulty
+        else do
+            putStrLn "-board requires a board as the second argument."
+            putStrLn "The board should be a string of each horizontal line consequtively"
+            putStrLn "The length is 81. Use -help for help."
+
 
 -- | startGameUN helper function for starting a game with an unknown win state
 -- tries to calculate the win state, if unable to starts the game with the unknown win state loops
