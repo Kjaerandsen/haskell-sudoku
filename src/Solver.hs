@@ -4,11 +4,27 @@ module Solver
       validateBoardState,
       solveHorizontal,
       solveVertical,
-      solveCubic
+      solveCubic,
+      solveHelper,
+      twoLevelInLine
     ) where
 
 import Data.List
 import Data.Char
+
+
+solveHelper :: [Char] -> IO()
+solveHelper board = do
+  putStrLn board
+  if validateBoard board then do
+    let solved = solve board
+    if length solved /= 81 then do
+      putStrLn "Error: Unable to solve the input board. Board might be invalid or too difficult for the solver."
+      putStrLn "Use -help for help."
+    else
+      putStrLn solved
+  else
+    putStrLn "Error: invalid input board. Use -help for help."
 
 
 -- >>> solve "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
