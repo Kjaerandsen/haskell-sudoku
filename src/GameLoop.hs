@@ -5,7 +5,8 @@ module GameLoop
         gameLoopHardUN,
         gameLoopEasyUN,
         startGameUN,
-        startGameUNHelper
+        startGameUNHelper,
+        startGame
     ) where
 
 import Solver
@@ -13,8 +14,62 @@ import GameLogic
 
 
 -- | startGame function, allows a user to select a stage and a difficulty.
---startGame :: IO()
---startGame = do
+startGame :: IO()
+startGame = do
+    putStrLn "Sudoku: Which difficulty do you want to play with? 1 for easy, 2 for hard."
+    inputLine <- getLine
+
+    if inputLine!!0 /= '1' && inputLine!!0 /= '2' then do
+        putStrLn "Invalid input"
+        startGame
+    else do
+        putStrLn "Stage selection: Stages available: 1-easy, 2-medium, 3-hard"
+        putStrLn "Input the number corresponding to the stage you want to play:"
+        let difficulty = fromEnum (inputLine!!0) - 49
+        inputLine <- getLine
+        let stage = fromEnum (inputLine!!0) - 48
+        if stage > 0 && stage < 4 then do
+            
+            startGameHelper stage difficulty
+        else do
+            putStrLn "Invalid input"
+            startGame
+
+
+startGameHelper :: Int -> Int -> IO()
+startGameHelper stage difficulty = do
+    case stage of
+        1 -> do
+            printBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+            if difficulty == 0 then
+                gameLoopEasy "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+            else
+                gameLoopHard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+        2 -> do
+            printBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+            if difficulty == 0 then
+                gameLoopEasy "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+            else
+                gameLoopHard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+        3 -> do
+            printBoard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+            if difficulty == 0 then
+                gameLoopEasy "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+            else
+                gameLoopHard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" 
+                             "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+        _ -> putStrLn "Error: invalid input to startGameHelper"
 
 
 -- | startGameUNHelper helper function for starting the game with a user input board. Validates the board and
@@ -66,6 +121,7 @@ startGameUN board difficulty = do
             else
                 gameLoopHardUN board board
 
+
 -- | gameLoopEasy Easy gameLoop with known answer / winstate
 gameLoopEasy :: [Char] -> [Char] -> [Char] -> IO()
 gameLoopEasy boardState boardInitial boardWin = do
@@ -105,10 +161,10 @@ gameLoopEasy boardState boardInitial boardWin = do
             gameLoopEasy boardState boardInitial boardWin
 
     else do -- check the piece (1..9)
-        putStrLn "Trying to read the integer slot"
+        --putStrLn "Trying to read the integer slot"
         let moveSlot = inputLine!!3
         -- Check the validity of the move
-        putStrLn (show coordinates)
+        --putStrLn (show coordinates)
         let validMove = checkMove coordinates moveSlot boardInitial boardWin
         
         -- If the move was invalid write an error message and recurse
@@ -123,9 +179,9 @@ gameLoopEasy boardState boardInitial boardWin = do
         
         else do -- Else perform the move and continue
             -- Update the board
-            putStrLn "Updating the board"
+            --putStrLn "Updating the board"
             let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
-            putStrLn "Successfull"
+            --putStrLn "Successfull"
             
             if board == boardWin then do -- If winning move print the boardState and a win message
                 printBoard board
@@ -175,10 +231,10 @@ gameLoopHard boardState boardInitial boardWin = do
             gameLoopHard boardState boardInitial boardWin
 
     else do -- check the piece (1..9)
-        putStrLn "Trying to read the integer slot"
+        --putStrLn "Trying to read the integer slot"
         let moveSlot = inputLine!!3
         -- Check the validity of the move
-        putStrLn (show coordinates)
+        --putStrLn (show coordinates)
         let validMove = checkMove coordinates moveSlot boardInitial boardWin
         
         -- If the move was invalid write an error message and recurse
@@ -190,9 +246,9 @@ gameLoopHard boardState boardInitial boardWin = do
         
         else do -- Else perform the move and continue
             -- Update the board
-            putStrLn "Updating the board"
+            --putStrLn "Updating the board"
             let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
-            putStrLn "Successfull"
+            --putStrLn "Successfull"
             
             if board == boardWin then do -- If winning move print the boardState and a win message
                 printBoard board
@@ -242,10 +298,10 @@ gameLoopHardUN boardState boardInitial = do
             gameLoopHardUN boardState boardInitial
 
     else do -- check the piece (1..9)
-        putStrLn "Trying to read the integer slot"
+        --putStrLn "Trying to read the integer slot"
         let moveSlot = inputLine!!3
         -- Check the validity of the move
-        putStrLn (show coordinates)
+        --putStrLn (show coordinates)
         let validMove = checkMoveUN coordinates moveSlot boardInitial boardState
         
         -- If the move was invalid write an error message and recurse
@@ -255,9 +311,9 @@ gameLoopHardUN boardState boardInitial = do
 
         else do -- Else perform the move and continue
             -- Update the board
-            putStrLn "Updating the board"
+            --putStrLn "Updating the board"
             let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
-            putStrLn "Successfull"
+            --putStrLn "Successfull"
 
             -- If the game is won print a good game message and exit
             if checkWin board then do -- If winning move print the boardState and a win message
@@ -307,10 +363,10 @@ gameLoopEasyUN boardState boardInitial = do
             gameLoopEasyUN boardState boardInitial
 
     else do -- check the piece (1..9)
-        putStrLn "Trying to read the integer slot"
+        --putStrLn "Trying to read the integer slot"
         let moveSlot = inputLine!!3
         -- Check the validity of the move
-        putStrLn (show coordinates)
+        --putStrLn (show coordinates)
         let validMove = checkMoveUN coordinates moveSlot boardInitial boardState
 
         -- If the move was invalid write an error message and recurse
@@ -325,9 +381,9 @@ gameLoopEasyUN boardState boardInitial = do
 
         else do -- Else perform the move and continue
             -- Update the board
-            putStrLn "Updating the board"
+            --putStrLn "Updating the board"
             let board = ((take (coordinates) boardState) ++ [inputLine!!3] ++ (drop (coordinates+1) boardState))
-            putStrLn "Successfull"
+            --putStrLn "Successfull"
 
             -- If the game is won print a good game message and exit
             if checkWin board then do -- If winning move print the boardState and a win message
