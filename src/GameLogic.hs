@@ -3,6 +3,7 @@ module GameLogic
     checkMove,
     checkMoveUN,
     coordToArrSlot,
+    checkWin
   ) where
 
 import Solver
@@ -159,3 +160,23 @@ checkMoveUN move piece boardInitial boardCurrent = do
   else
     -- 0 means the move is invalid, or the slot is occupied
     0
+
+-- >>> elem '_' "12323_"
+-- True
+--
+
+-- | checkWin function, takes a board and checks if all slots are occupied and that the state is valid.
+checkWin :: [Char] -> Bool
+checkWin board = do
+  -- Checks if there are any unoccupied slots
+  if elem '_' board then
+    False
+  else -- if not, validate the board
+    if validateBoard board then
+      -- If the board is valid validate the board state
+      -- returns true if the board state is valid (game win condition), else false
+      validateBoardState board
+    else
+      -- if the board is invalid return false
+      False
+    
