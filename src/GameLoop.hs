@@ -8,8 +8,8 @@ import GameLogic
 
 -- | startGameUN helper function for starting a game with an unknown win state
 -- tries to calculate the win state, if unable to starts the game with the unknown win state loops
-startHardGameUN :: [Char] -> Int -> IO()
-startHardGameUN board difficulty = do
+startGameUN :: [Char] -> Int -> IO()
+startGameUN board difficulty = do
     -- Use the solve function to try to solve the inputBoard
     if length board /= 81 then
         putStrLn "Invalid board, quitting."
@@ -26,9 +26,9 @@ startHardGameUN board difficulty = do
             putStrLn "Starting game without knowing the end result"
             -- replace theese with functions where boardWin is unknown
             if difficulty == 0 then
-                gameLoopEasy board board boardWin
+                gameLoopEasyUN board board
             else
-                gameLoopHard board board boardWin
+                gameLoopHardUN board board
 
 -- | gameLoopEasy Easy gameLoop with known answer / winstate
 gameLoopEasy :: [Char] -> [Char] -> [Char] -> IO()
