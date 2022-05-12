@@ -26,8 +26,9 @@ startGameUNHelper board = do
         let difficulty = fromEnum (inputLine!!0) - 49
 
         -- Check if the board is valid
-        if validateBoard board then
+        if validateBoard board then do
             -- Start the game
+            printBoard board
             startGameUN board difficulty
         else do
             putStrLn "-board requires a board as the second argument."
@@ -88,7 +89,8 @@ gameLoopEasy boardState boardInitial boardWin = do
                     gameLoopEasy boardInitial boardInitial boardWin
                 _ -> do
                     printBoard boardState
-                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0)
+                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0 ++ ".\nInput -help for help.")
+                    gameLoopEasy boardState boardInitial boardWin
             
         else do -- else simply recurse
             printBoard boardState
@@ -156,7 +158,8 @@ gameLoopHard boardState boardInitial boardWin = do
                     gameLoopHard boardInitial boardInitial boardWin
                 _ -> do
                     printBoard boardState
-                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0)
+                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0 ++ ".\nInput -help for help.")
+                    gameLoopHard boardState boardInitial boardWin
             
         else do -- else simply recurse
             printBoard boardState
@@ -221,7 +224,8 @@ gameLoopHardUN boardState boardInitial = do
                     gameLoopHardUN boardInitial boardInitial
                 _ -> do
                     printBoard boardState
-                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0)
+                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0 ++ ".\nInput -help for help.")
+                    gameLoopHardUN boardState boardInitial
             
         else do -- else simply recurse
             printBoard boardState
@@ -284,7 +288,8 @@ gameLoopEasyUN boardState boardInitial = do
                     gameLoopEasyUN boardInitial boardInitial
                 _ -> do
                     printBoard boardState
-                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0)
+                    putStrLn ("Error: Invalid parameter. "++ (words inputLine)!!0 ++ ".\nInput -help for help.")
+                    gameLoopEasyUN boardState boardInitial
             
         else do -- else simply recurse
             printBoard boardState
