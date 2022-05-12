@@ -3,7 +3,6 @@ module GameLogic
     coordToArrSlot
   ) where
 
-import Solver
 
 -- | printBoard takes a board and prints it to the screen
 -- uses the helper function printLineByLine to print each line of the array

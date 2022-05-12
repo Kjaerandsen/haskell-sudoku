@@ -25,7 +25,7 @@ solveHelper board = do
     if length solved /= 81 then do
       putStrLn "Error: Unable to solve the input board. Board might be invalid or too difficult for the solver."
       putStrLn "Use -help for help."
-    else
+    else do
       printBoard solved
       putStrLn "In the input format:"
       putStrLn solved
