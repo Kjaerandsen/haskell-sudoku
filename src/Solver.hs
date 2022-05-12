@@ -6,22 +6,28 @@ module Solver
       solveVertical,
       solveCubic,
       solveHelper,
-      twoLevelInLine
+      twoLevelInLine,
+      checkMove,
+      checkMoveUN,
+      checkWin
     ) where
 
+import GameLogic
 import Data.List
 import Data.Char
 
 
+-- | solveHelper takes a user input board, prints the board solved if possible and valid, else print an error.
 solveHelper :: [Char] -> IO()
 solveHelper board = do
-  putStrLn board
   if validateBoard board then do
     let solved = solve board
     if length solved /= 81 then do
       putStrLn "Error: Unable to solve the input board. Board might be invalid or too difficult for the solver."
       putStrLn "Use -help for help."
     else
+      printBoard solved
+      putStrLn "In the input format:"
       putStrLn solved
   else
     putStrLn "Error: invalid input board. Use -help for help."
@@ -284,3 +290,69 @@ validateValueLists input = do
   -- If there are no elements left return true
   else
     True
+
+
+-- | checkMove takes an array slot, a piece, and the inital and winning board states
+-- returns 0 if the move is invalid, 1 if valid and 2 if valid, but wrong
+checkMove :: Int -> Char -> [Char] -> [Char] -> Int
+checkMove move piece boardInitial boardWin = do
+  if boardInitial!!move == '_' then
+    -- Check if the piece integer is equal to the value occupying the slot in the winning board
+    if piece == boardWin!!move then
+      -- 2 means the slot is available, and the move is correct
+      2
+    else do
+      -- Check if the piece is a valid piece
+      let pieceNum = fromEnum piece
+      -- Valid range for number 1 through to 9 is 49-57.
+      if pieceNum > 48 && pieceNum < 58  then -- Incorrect move, valid slot and valid piece.
+        1
+      else -- Not a valid number, invalid response
+        0
+  else
+    -- 0 means the move is invalid, or the slot is occupied
+    0
+
+
+-- | checkMove takes an array slot, a piece, and the inital board and current board states
+-- returns 0 if the move is invalid, 1 if it is valid, 2 if it is valid, but incorrect 
+-- (using the validateBoardState function)
+checkMoveUN :: Int -> Char -> [Char] -> [Char] -> Int
+checkMoveUN move piece boardInitial boardCurrent = do
+  if boardInitial!!move == '_' then do
+    -- Check if the piece is a valid piece
+    let pieceNum = fromEnum piece
+    -- Valid range for number 1 through to 9 is 49-57.
+    if pieceNum > 48 && pieceNum < 58  then do-- valid slot and valid piece.
+      -- Create a board with the move performed
+      let board = ((take (move) boardCurrent) ++ [piece] ++ (drop (move+1) boardCurrent))
+      -- Check it with basic board state validation
+      if validateBoardState board then -- Move is valid to a basic test
+        2
+      else -- Move is valid, but incorrect according to the current board state
+        1
+    else -- Not a valid number, invalid response
+      0
+  else
+    -- 0 means the move is invalid, or the slot is occupied
+    0
+
+-- >>> elem '_' "12323_"
+-- True
+--
+
+-- | checkWin function, takes a board and checks if all slots are occupied and that the state is valid.
+checkWin :: [Char] -> Bool
+checkWin board = do
+  -- Checks if there are any unoccupied slots
+  if elem '_' board then
+    False
+  else -- if not, validate the board
+    if validateBoard board then
+      -- If the board is valid validate the board state
+      -- returns true if the board state is valid (game win condition), else false
+      validateBoardState board
+    else
+      -- if the board is invalid return false
+      False
+    
