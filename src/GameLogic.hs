@@ -11,6 +11,7 @@ printBoard arr = do
   putStrLn "    A B C   D E F   G H I\n   ------- ------- -------"
   printLineByLine arr 1
 
+
 -- | printLineByLine takes a line length and a line list and prints the list line by line
 -- uses the printLine helper function to print each line
 printLineByLine :: [Char] -> Int -> IO()
@@ -26,6 +27,7 @@ printLineByLine arr ctr = do
       printLineByLine (drop len arr) (ctr+1)
   else
     return ()
+
 
 -- | printLine takes an array of integers and prints them one by one separated by a single space
 -- when done also print a line break
