@@ -55,16 +55,10 @@ solve board = do
 solveLoopHelper :: [Int] -> [Int]
 solveLoopHelper inputBoard = do
   let outputBoard = solveLoop inputBoard
-  if mySignature 0 outputBoard /= 0 && outputBoard /= inputBoard then
+  if elem 0 outputBoard && outputBoard /= inputBoard then
     solveLoopHelper outputBoard
   else
     outputBoard
-
--- Retrieved from haskell assignment 1
--- MySignature function, uses list comprehension to go through each element of the input list, comparing it to
--- the signature and returning the number of occurrences
-mySignature :: Eq a => a -> [a] -> Int
-mySignature z xs = sum [if z == x then 1 else 0 | x <- xs]
 
 -- | solveLoop single level loop for solving sudoku puzzles. Returns the solved board as an integer,
 -- or if unable to solve return the progress made.
