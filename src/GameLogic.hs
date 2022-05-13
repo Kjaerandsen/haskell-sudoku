@@ -53,6 +53,7 @@ printTile i = do
     putStr "| "
 
 
+-- Enum reading, used later for input validation.
 -- >>> read "1"::Int
 -- >>> fromEnum 'a'
 -- >>> fromEnum 'I'
@@ -65,6 +66,7 @@ printTile i = do
 -- 57
 --
 
+-- test 2 and 6 should be -1 (fail), the rest should return real coordinates (0-80)
 -- >>> coordToArrSlot "B5"
 -- >>> coordToArrSlot "Z2"
 -- >>> coordToArrSlot "b5"
