@@ -15,6 +15,7 @@ module Solver
 import GameLogic
 import Data.List
 import Data.Char
+import Lib
 
 
 -- | solveHelper takes a user input board, prints the board solved if possible and valid, else print an error.
@@ -44,11 +45,7 @@ solve board = do
   if (validateBoard board) /= True then
     ""
   else do
-    -- Board to integer using list comprehension
-    let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
-
-    let answer = solveLoopHelper boardInt
-
+    let answer = solveLoopHelper (boardCharToInt board)
     -- Convert integer board back to char board
     [if x == 0 then '_' else chr (48 + x) | x <- answer]
 
@@ -93,7 +90,7 @@ solveLoop board = do
   [if length(comparedWithInitial!!i) == 1 then (comparedWithInitial!!i)!!0 else board!!i | i <- [0..80]]
 
 
--- | twoLevelInLine takes a x larger than 1-leveled array and returns the items inline as an x-1 leveled array.
+-- | twoLevelInLine takes a x larger than 1-leveled array and returns the items inline as an (x - 1) leveled array.
 twoLevelInLine :: [[a]] -> [a] -> [a]
 twoLevelInLine twoLevelArray output= do
   if length twoLevelArray > 0 then
@@ -242,8 +239,8 @@ validateBoard board =
 -- returns true if no conflicts, false if any conflicts
 validateBoardState :: [Char] -> Bool
 validateBoardState board = do
-  -- Board to integer using list comprehension
-  let boardInt = [if x == '_' then 0 else digitToInt x | x <- board ]
+  -- Board to integer
+  let boardInt = boardCharToInt board
   -- Get, and check the Horizontal lines
   if validateValueLists (validateHorizontal boardInt []) /= True then
     False
