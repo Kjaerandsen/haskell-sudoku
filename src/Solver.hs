@@ -6,7 +6,6 @@ module Solver
       solveVertical,
       solveCubic,
       solveHelper,
-      twoLevelInLine,
       checkMove,
       checkMoveUN,
       checkWin
@@ -14,7 +13,6 @@ module Solver
 
 import GameLogic
 import Data.List
-import Data.Char
 import Lib
 
 
@@ -47,7 +45,7 @@ solve board = do
   else do
     let answer = solveLoopHelper (boardCharToInt board)
     -- Convert integer board back to char board
-    [if x == 0 then '_' else chr (48 + x) | x <- answer]
+    boardIntToChar answer
 
 
 -- | solveLoopHelper runs the solveLoop for the solve function until complete, or no progress can be made
@@ -59,6 +57,7 @@ solveLoopHelper inputBoard = do
     solveLoopHelper outputBoard
   else
     outputBoard
+
 
 -- | solveLoop single level loop for solving sudoku puzzles. Returns the solved board as an integer,
 -- or if unable to solve return the progress made.
@@ -83,14 +82,6 @@ solveLoop board = do
   -- Finally only keep the calculated values if they only contain a single choice for the slot
   [if length(comparedWithInitial!!i) == 1 then (comparedWithInitial!!i)!!0 else board!!i | i <- [0..80]]
 
-
--- | twoLevelInLine takes a x larger than 1-leveled array and returns the items inline as an (x - 1) leveled array.
-twoLevelInLine :: [[a]] -> [a] -> [a]
-twoLevelInLine twoLevelArray output= do
-  if length twoLevelArray > 0 then
-    twoLevelInLine (drop 1 twoLevelArray) (output ++ twoLevelArray!!0)
-  else
-    output
 
 -- >>> solveHorizontal [0,0,0,7,6,0,4,0,0] []
 -- [[1,2,3,5,8,9]]
