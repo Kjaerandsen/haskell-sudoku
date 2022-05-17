@@ -1,5 +1,4 @@
 module Main where
-
 -- Local libraries
 import Lib
 import Solver
@@ -48,4 +47,3 @@ main = do
             otherwise -> putStrLn "No valid parameter provided, try running the programs with -help for help.\nExciting the program."
     else do
         putStrLn "No parameters provided, try running the programs with -help for help.\nExciting the program."
-        
