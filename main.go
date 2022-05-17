@@ -14,6 +14,9 @@ type model struct {
 	cursor int
 }
 
+// This product is based on the "Bubble Tea basics" tutorial found at
+// https://github.com/charmbracelet/bubbletea/tree/master/tutorials/basics
+
 func main() {
 	p := tea.NewProgram(initialModel())
 	if err := p.Start(); err != nil {
