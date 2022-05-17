@@ -29,15 +29,8 @@ main = do
 runPropertyTests :: IO()
 runPropertyTests = do
     quickCheck prop_coordToArrSlotSC
-    quickCheck prop_coordToArrSlotBC 
-
-testInput :: Gen Int
-testInput = choose (48,57)
-
--- >>> generate testInput
--- 48
---
-
+    quickCheck prop_coordToArrSlotBC
+    quickCheck prop_coordToArrSlotAll
 
 -- property tests with "choose" based on Mark Seemann's answer at stackoverflow found at:
 -- https://stackoverflow.com/questions/52233821/how-to-select-a-value-in-a-range-with-quickcheck
@@ -58,7 +51,11 @@ prop_coordToArrSlotBC = do
     y <- choose (97, 105) :: Gen Integer
     return $ (coordToArrSlot ([toEnum (fromIntegral y)::Char] ++ [toEnum (fromIntegral x)::Char])) `elem` [0..80]
 
-
+-- | prop_coordToArrSlotAll, same as above, but with list comprehension to build the list which is used
+prop_coordToArrSlotAll :: Gen Bool
+prop_coordToArrSlotAll = do
+    x <- choose (0, 80) :: Gen Integer
+    return $ (coordToArrSlot ([[i]++[j] | j <- ['1'..'9'], i <- ['a'..'i']]!!(fromIntegral x))) `elem` [0..80]
 
 testSolve :: Spec
 testSolve =
