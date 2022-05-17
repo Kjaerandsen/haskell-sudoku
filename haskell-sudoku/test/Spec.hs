@@ -1,7 +1,6 @@
 -- Testing dependencies
 import Test.DocTest(doctest) 
-import Test.QuickCheck
---import Test.QuickCheck(quickCheck, forAll, Arbitrary, arbitrary, oneof) 
+import Test.QuickCheck(quickCheck, Gen, choose)
 import Test.Hspec(Spec, hspec, describe, shouldBe, it) 
 import Test.Hspec.QuickCheck(prop)
 {-# LANGUAGE FlexibleInstances #-}
