@@ -3,7 +3,6 @@ import Test.DocTest(doctest)
 import Test.QuickCheck(quickCheck, Gen, choose)
 import Test.Hspec(Spec, hspec, describe, shouldBe, it) 
 import Test.Hspec.QuickCheck(prop)
-{-# LANGUAGE FlexibleInstances #-}
 
 -- Functions to test
 import Lib
@@ -24,6 +23,10 @@ main = do
         testSolveCubic
     putStrLn "Quickcheck / Property tests:"
     runPropertyTests
+
+-----------------------------------------------------------------------------------------------------------------
+
+-- property tests
 
 -- | runPropertyTests simple helper function that excecutes all quickCheck property tests
 runPropertyTests :: IO()
@@ -56,6 +59,11 @@ prop_coordToArrSlotAll :: Gen Bool
 prop_coordToArrSlotAll = do
     x <- choose (0, 80) :: Gen Integer
     return $ (coordToArrSlot ([[i]++[j] | j <- ['1'..'9'], i <- ['a'..'i']]!!(fromIntegral x))) `elem` [0..80]
+
+
+----------------------------------------------------------------------------------------------------------------
+
+-- Unit tests
 
 testSolve :: Spec
 testSolve =
