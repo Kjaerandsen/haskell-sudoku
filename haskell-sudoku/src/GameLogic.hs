@@ -56,14 +56,19 @@ printTile i = do
 -- Enum reading, used later for input validation.
 -- >>> read "1"::Int
 -- >>> fromEnum 'a'
+-- >>> fromEnum 'A'
 -- >>> fromEnum 'I'
 -- >>> fromEnum '1'
 -- >>> fromEnum '9'
 -- 1
 -- 97
+-- 105
 -- 73
 -- 49
 -- 57
+--
+-- >>> 0 `elem` [0..1]
+-- True
 --
 
 -- test 2 and 6 should be -1 (fail), the rest should return real coordinates (0-80)
@@ -81,6 +86,21 @@ printTile i = do
 -- -1
 --
 
+-- >>> [1..9]
+-- [1,2,3,4,5,6,7,8,9]
+--
+-- >>> ['a'..'i']
+-- "abcdefghi"
+--
+-- >>>  [[i]++[j] | j <- ['1'..'9'], i <- ['a'..'i']]
+-- ["a1","b1","c1","d1","e1","f1","g1","h1","i1","a2","b2","c2","d2","e2","f2","g2","h2","i2","a3","b3","c3","d3","e3","f3","g3","h3","i3","a4","b4","c4","d4","e4","f4","g4","h4","i4","a5","b5","c5","d5","e5","f5","g5","h5","i5","a6","b6","c6","d6","e6","f6","g6","h6","i6","a7","b7","c7","d7","e7","f7","g7","h7","i7","a8","b8","c8","d8","e8","f8","g8","h8","i8","a9","b9","c9","d9","e9","f9","g9","h9","i9"]
+--
+-- >>> toEnum 48::Char
+-- '0'
+--
+-- >>> ['a'] ++ [toEnum 57::Char]
+-- "a9"
+--
 
 -- | coordToArrSlot takes player coordinates from input and returns the array slot
 -- to be occupied. Returns -1 if the input is invalid.
@@ -113,4 +133,3 @@ coordToArrSlot move = do
 -- The convertion used in checkMove, from integer to char
 -- >>> toEnum 48::Char
 -- '0'
---

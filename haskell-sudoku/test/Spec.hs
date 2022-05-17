@@ -1,8 +1,10 @@
 -- Testing dependencies
 import Test.DocTest(doctest) 
-import Test.QuickCheck(quickCheck) 
+import Test.QuickCheck
+--import Test.QuickCheck(quickCheck, forAll, Arbitrary, arbitrary, oneof) 
 import Test.Hspec(Spec, hspec, describe, shouldBe, it) 
-import Test.Hspec.QuickCheck(prop) 
+import Test.Hspec.QuickCheck(prop)
+{-# LANGUAGE FlexibleInstances #-}
 
 -- Functions to test
 import Lib
@@ -13,7 +15,7 @@ main :: IO ()
 main = do
     putStrLn "Doctests:"
     doctest ["-isrc", "app/Main.hs"]
-    putStrLn "\nHspec tests:"
+    putStrLn "\nHspec / Unit tests:"
     hspec $ do
         testSolve
         testValidateBoard
@@ -21,6 +23,43 @@ main = do
         testSolveHorizontal
         testSolveVertical
         testSolveCubic
+    putStrLn "Quickcheck / Property tests:"
+    runPropertyTests
+
+-- | runPropertyTests simple helper function that excecutes all quickCheck property tests
+runPropertyTests :: IO()
+runPropertyTests = do
+    quickCheck prop_coordToArrSlotSC
+    quickCheck prop_coordToArrSlotBC 
+
+testInput :: Gen Int
+testInput = choose (48,57)
+
+-- >>> generate testInput
+-- 48
+--
+
+
+-- property tests with "choose" based on Mark Seemann's answer at stackoverflow found at:
+-- https://stackoverflow.com/questions/52233821/how-to-select-a-value-in-a-range-with-quickcheck
+
+-- | prop_coordToArrSlotSC goes through characters a to z and integers 1 to 9 
+-- and checks if the output is a valid board slot
+prop_coordToArrSlotSC :: Gen Bool
+prop_coordToArrSlotSC = do
+    x <- choose (49, 57) :: Gen Integer
+    y <- choose (65, 73) :: Gen Integer
+    return $ (coordToArrSlot ([toEnum (fromIntegral y)::Char] ++ [toEnum (fromIntegral x)::Char])) `elem` [0..80]
+
+-- | prop_coordToArrSlotSC goes through characters A to Z and integers 1 to 9 
+-- and checks if the output is a valid board slot
+prop_coordToArrSlotBC :: Gen Bool
+prop_coordToArrSlotBC = do
+    x <- choose (49, 57) :: Gen Integer
+    y <- choose (97, 105) :: Gen Integer
+    return $ (coordToArrSlot ([toEnum (fromIntegral y)::Char] ++ [toEnum (fromIntegral x)::Char])) `elem` [0..80]
+
+
 
 testSolve :: Spec
 testSolve =
