@@ -77,7 +77,7 @@ The Golang frontend has two valid arguments:
 
 - "-help": Works the same way as the corresponding argument in the Haskell program.
 
-The Golang frontend is a less feature rich implementation of the sudoku game. It uses the haskell program as a backend which it runs with parameters to run the different relevant functions in Haskell (the functions "solve", "validateBoardState" and "checkWin").
+The Golang frontend is a less feature rich implementation of the sudoku game. It uses the haskell program as a backend which it runs with parameters to run the different relevant functions in Haskell (the functions "solve", "validateBoardState" and "checkWin"). The difficulty of the golang frontend is the "easy" difficulty in the haskell program. So an invalid move returns an error message and doesn't update the board.
 
 In order to use the Haskell program as a backend for the Golang frontend it needs to be in the same directory as the Golang frontend, and the Golang program needs to be run from that directory. The name of the executable should be "haskell-sudoku-exe". To run the frontend use the command `go build main.go`, run the new executable from the base folder of the project, and provide an argument. A terminal is required to run the frontend.
 
