@@ -54,6 +54,10 @@ The arguments for the Haskell program are:
 - "-solve": Allows inputting a board to receive it back solved if possible to solve.
 - "-validate": Subfunctions for the Golang frontend, allows the frontend to validate and check boards for win conditions. As well as solving boards.
 
+All arguments which take parameters use a single space to tell the argument and the value apart. For example the solve argument:
+
+`solve ___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___`
+
 All commands assume you are in the `haskell-sudoku` sub-folder in the project.
 There is an automated test suite that can be run using the `stack test` command.
 
@@ -75,7 +79,7 @@ The Golang frontend has two valid arguments:
 
 The Golang frontend is a less feature rich implementation of the sudoku game. It uses the haskell program as a backend which it runs with parameters to run the different relevant functions in Haskell (the functions "solve", "validateBoardState" and "checkWin").
 
-In order to use the Haskell program as a backend for the Golang frontend it needs to be in the same directory as the Golang frontend, and the Golang program needs to be run from that directory. The name of the executable should be "haskell-sudoku-exe". To run the frontend use the command `go run main.go` from the base folder of the project, and provide an argument. A terminal is required to run the frontend.
+In order to use the Haskell program as a backend for the Golang frontend it needs to be in the same directory as the Golang frontend, and the Golang program needs to be run from that directory. The name of the executable should be "haskell-sudoku-exe". To run the frontend use the command `go build main.go`, run the new executable from the base folder of the project, and provide an argument. A terminal is required to run the frontend.
 
 The Golang frontend is tested in the "Windows Terminal", with both the standard windows "CMD" shell and "Powershell".
 

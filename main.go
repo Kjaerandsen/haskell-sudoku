@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"os"
 	"os/exec"
@@ -10,7 +11,7 @@ import (
 )
 
 var Board string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
-var BoardInitial string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+var BoardInitial string
 var BoardWin string
 var KnownEndGame = true
 var Message = "Awaiting move"
@@ -19,27 +20,65 @@ type model struct {
 	cursor int
 }
 
-// This product is based on the
-
+// This "tea program" is based on the "bubble tea basics tutorial" found at:
+// https://pkg.go.dev/github.com/charmbracelet/bubbletea@v0.20.0#readme-tutorial
 func main() {
-	// Execute the haskell program to get a board
-	solvedBoard, _, err := haskellCall(1, Board)
-	if err != nil {
-		fmt.Println("Error calling haskell backend: ", err)
-		return
-	}
-	if solvedBoard == "" {
-		KnownEndGame = false
-	}
-	BoardWin = solvedBoard
+	// Take arguments
+	help := flag.Bool("help", false, "Print out the available functions.")
 
-	// If valid start the game
-	p := tea.NewProgram(initialModel())
-	if err := p.Start(); err != nil {
-		fmt.Printf("An error has occured: %v", err)
-		os.Exit(1)
+	// For the generate flag
+	var boardValue string
+	flag.StringVar(&boardValue, "board", "", "Start the game with a board")
+
+	// Parse the flags
+	flag.Parse()
+
+	if *help {
+		fmt.Println(
+			"This program uses flags to run the different commands, the following flags are availablle:\n" +
+				"-help  : Outputs this message\n" +
+				"-board=x : Where x is the board you want to play on. Read left to right, line by line. With '_' for empty slots.\n" +
+				"For example: board=___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___")
 	}
-	fmt.Println("\nQuitting the game")
+
+	if boardValue == "" {
+		fmt.Println("No valid argument provided, use -help for help.\nQuitting")
+		return
+	} else {
+		// Validate the board state, and start the game.
+		_, validBoard, err := haskellCall(2, boardValue)
+		if err != nil {
+			fmt.Println("Error calling haskell backend: ", err, ". Quitting.")
+			return
+		}
+		// Quit if invalid board
+		if !validBoard {
+			fmt.Println("Invalid board parameter, Quitting")
+			return
+		}
+
+		// Execute the haskell program to get a solved state of the board
+		solvedBoard, _, err := haskellCall(1, boardValue)
+		if err != nil {
+			fmt.Println("Error calling haskell backend: ", err)
+			return
+		}
+		// Start the game with an unknown end state if unable to solve it
+		if solvedBoard == "" {
+			KnownEndGame = false
+		}
+		// Set the three boards
+		BoardWin = solvedBoard
+		Board = boardValue
+		BoardInitial = boardValue
+		// Start the game
+		p := tea.NewProgram(initialModel())
+		if err := p.Start(); err != nil {
+			fmt.Printf("An error has occured: %v", err)
+			os.Exit(1)
+		}
+		fmt.Println("\nQuitting")
+	}
 }
 
 /*
