@@ -27,6 +27,7 @@ library
   exposed-modules:
       GameLogic
       GameLoop
+      GoIntegration
       Lib
       Solver
   other-modules:

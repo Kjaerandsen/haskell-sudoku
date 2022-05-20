@@ -4,6 +4,7 @@ import Lib
 import Solver
 import GameLogic
 import GameLoop
+import GoIntegration
 
 import System.Environment -- For arguments
 
@@ -32,7 +33,10 @@ main = do
                 --gameLoopHard "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___" "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
             "-board" -> do
                 if length args > 1 then
-                    startGameUNHelper (args!!1)
+                    if length args > 2 && args!!1 == "-go" then
+                        startGameGo (args!!2)
+                    else
+                        startGameUNHelper (args!!1)
                 else do
                     putStrLn "-board requires a board as the second argument."
                     putStrLn "The board should be a string of each horizontal line consequtively"
