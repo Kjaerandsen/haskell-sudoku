@@ -7,15 +7,15 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var Board string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+var Board string = "35876149226793451819452837668215974354387216997134682582641593743569728171928365_"
 var BoardInitial string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
+var BoardWin string = "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
 
 type model struct {
 	cursor int
 }
 
-// This product is based on the "Bubble Tea basics" tutorial found at
-// https://github.com/charmbracelet/bubbletea/tree/master/tutorials/basics
+// This product is based on the
 
 func main() {
 	p := tea.NewProgram(initialModel())
@@ -23,7 +23,7 @@ func main() {
 		fmt.Printf("An error has occured: %v", err)
 		os.Exit(1)
 	}
-	fmt.Println("Game won!")
+	fmt.Println("Quitting the game")
 }
 
 func initialModel() model {
@@ -50,7 +50,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		// The "up" and "w" keys move the cursor up
 		case "up", "w":
-			if m.cursor > 7 {
+			if m.cursor > 8 {
 				m.cursor -= 9
 			} else {
 				m.cursor += 72
@@ -111,6 +111,12 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	}
+
+	// Check if the game is won
+	if Board == BoardWin {
+		fmt.Println("You've won the game. Well playeed!")
+		return m, tea.Quit
+	}
 	// Return the updated model to the Bubble Tea runtime for processing.
 	// Note that we're not returning a command.
 	return m, nil
@@ -159,7 +165,7 @@ func (m model) View() string {
 	}
 
 	// The footer
-	s += "     -----------   -----------   -----------  |\n\nPress q to quit.\n"
+	s += "     -----------   -----------   -----------  \n\nPress q to quit.\n"
 
 	// Send the UI for rendering
 	return s
