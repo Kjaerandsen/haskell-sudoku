@@ -214,7 +214,7 @@ buildOccupied x y = do
 -- True
 --
 
--- | validateBoard takes a board and validates its content charcters and its length
+-- | validateBoard takes a board and validates its content characters and its length
 validateBoard :: [Char] -> Bool
 validateBoard board = 
   if length (reverseFilter (`elem` "0123456789_") board) /= 0 || length board /= 81 then

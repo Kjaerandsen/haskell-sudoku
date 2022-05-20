@@ -1,19 +1,35 @@
 module GoIntegration
-    ( startGameGo ) where
-import Solver (solve, validateBoard)
+    ( 
+        solveHelperGo,
+        validateBoardStateGo,
+        checkWinGo
+    ) where
+import Solver (solve, validateBoard, validateBoardState, checkWin)
 
--- | startGameGo takes a board, solves it and writes the board and the solved board to a file
--- used in the golang frontend. If unable to solve it writes an error to the file instead
-startGameGo :: [Char] -> IO()
-startGameGo board = do
-    -- Check if the board is valid
-    if validateBoard board then do
-        let boardWin = solve board
-        if length boardWin /= 0 then do
-            writeFile "gogame.txt" (board ++ "," ++ boardWin)
-        else    
-            writeFile "gogame.txt" "fail"
+-- | solveHelperGo takes a user input board, prints the board solved if possible and valid, else print an error.
+solveHelperGo :: [Char] -> IO()
+solveHelperGo board = do
+  if validateBoard board then do
+    let solved = solve board
+    if length solved /= 81 then do
+      putStr "Error: unable to solve the board"
     else do
-        putStrLn "-board requires a board as the second argument."
-        putStrLn "The board should be a string of each horizontal line consequtively"
-        putStrLn "The length is 81. Use -help for help."
+      putStr solved
+  else
+    putStr "Error: invalid input board"
+
+-- | validateBoardStateGo function for validating the board state from go
+validateBoardStateGo :: [Char] -> IO()
+validateBoardStateGo board = do
+    if validateBoardState board then
+        putStr "Valid"
+    else
+        putStr "Invalid"
+
+-- | checkWinGo function for calling by golang to check the current board state for a win
+checkWinGo :: [Char] -> IO()
+checkWinGo board =
+    if checkWin board then
+        putStr "Valid"
+    else
+        putStr "inValid"
