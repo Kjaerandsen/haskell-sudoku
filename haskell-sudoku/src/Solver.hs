@@ -42,6 +42,9 @@ solve board = do
   -- First validate the board
   if (validateBoard board) /= True then
     ""
+  -- Then validate the board state
+  else if (validateBoardState board) /= True then
+    ""
   else do
     let answer = solveLoopHelper (boardCharToInt board)
     -- Convert integer board back to char board
