@@ -46,11 +46,11 @@ main = do
                     putStrLn "The board should be a string of each horizontal line consequtively"
                     putStrLn "The length is 81. Use -help for help."
             "-validate" -> do
-                if length args > 1 then do
-                    if args!!0 == "state" then
-                        validateBoardStateGo (args!!1)
-                    else if args!!0 == "win" then
-                        checkWinGo (args!!1)
+                if length args > 2 then do
+                    if args!!1 == "-state" then
+                        validateBoardStateGo (args!!2)
+                    else if args!!1 == "-win" then
+                        checkWinGo (args!!2)
                     else
                         putStr "Error: invalid command, use -help for help"
                 else do

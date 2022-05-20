@@ -24,7 +24,7 @@ validateBoardStateGo board = do
     if validateBoardState board then
         putStr "Valid"
     else
-        putStr "Invalid"
+        putStr "inValid"
 
 -- | checkWinGo function for calling by golang to check the current board state for a win
 checkWinGo :: [Char] -> IO()

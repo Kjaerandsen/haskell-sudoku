@@ -1,15 +1,19 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 
 	tea "github.com/charmbracelet/bubbletea"
 )
 
-var Board string = "35876149226793451819452837668215974354387216997134682582641593743569728171928365_"
+var Board string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
 var BoardInitial string = "___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___"
-var BoardWin string = "358761492267934518194528376682159743543872169971346825826415937435697281719283654"
+var BoardWin string
+var KnownEndGame = true
+var Message = "Awaiting move"
 
 type model struct {
 	cursor int
@@ -18,12 +22,63 @@ type model struct {
 // This product is based on the
 
 func main() {
+	// Execute the haskell program to get a board
+	solvedBoard, _, err := haskellCall(1, Board)
+	if err != nil {
+		fmt.Println("Error calling haskell backend: ", err)
+		return
+	}
+	if solvedBoard == "" {
+		KnownEndGame = false
+	}
+	BoardWin = solvedBoard
+
+	// If valid start the game
 	p := tea.NewProgram(initialModel())
 	if err := p.Start(); err != nil {
 		fmt.Printf("An error has occured: %v", err)
 		os.Exit(1)
 	}
-	fmt.Println("Quitting the game")
+	fmt.Println("\nQuitting the game")
+}
+
+/*
+   haskellCall function takes a function selection integer and a board
+   returns the board solved or a statecheck of the board or a wincheck of the board.
+   Code to run other program from go retrieved from Mariusz's comment at the gitlab issue 62 found at:
+   https://git.gvk.idi.ntnu.no/course/prog2006/prog2006-2022/-/issues/62#note_54012
+*/
+func haskellCall(function int, board string) (string, bool, error) {
+	var args = []string{"-solve", "",
+		board}
+	switch function {
+	case 1:
+		args[1] = "-go"
+	case 2:
+		args[0] = "-validate"
+		args[1] = "-state"
+	case 3:
+		args[0] = "-validate"
+		args[1] = "-win"
+	}
+	output, err := exec.Command("./haskell-sudoku-exe", args...).Output()
+	if err != nil {
+		fmt.Println(err.Error())
+		return "", false, errors.New("error running the haskell backend")
+	}
+	// Take the response, convert it to a string
+	responseData := string(output)
+	// Check the response and return the connected response
+	if len(responseData) == 81 {
+		return responseData, false, nil
+	} else if responseData == "Valid" {
+		return "", true, nil
+	} else if responseData == "inValid" {
+		return "", false, nil
+	} else if responseData == "" {
+		return "", false, nil
+	}
+	return "", false, errors.New("error invalid response from the haskell backend")
 }
 
 func initialModel() model {
@@ -78,6 +133,10 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 				m.cursor += 8
 			}
 
+		case "r":
+			Board = BoardInitial
+			Message = "Reset the board to the initial board state"
+
 		case "1":
 			replaceValue("1", m.cursor)
 
@@ -109,27 +168,72 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			replaceValue("_", m.cursor)
 
 		}
-
 	}
 
 	// Check if the game is won
-	if Board == BoardWin {
-		fmt.Println("You've won the game. Well playeed!")
-		return m, tea.Quit
+	if KnownEndGame {
+		if Board == BoardWin {
+			fmt.Println("You've won the game. Well playeed!")
+			return m, tea.Quit
+		}
+	} else {
+		// If the end game state is unknown check through a call to the haskell backend
+		_, gameWin, err := haskellCall(3, Board)
+		if err != nil {
+			fmt.Println("Error checking for win: ", err)
+			return m, tea.Quit
+		}
+		if gameWin {
+			fmt.Println("You've won the game. Well playeed!")
+			return m, tea.Quit
+		}
 	}
+
 	// Return the updated model to the Bubble Tea runtime for processing.
 	// Note that we're not returning a command.
 	return m, nil
 }
 
 func replaceValue(character string, position int) {
-	if BoardInitial[position:position+1] == "_" {
-		if position == 0 {
-			Board = character + Board[position+1:]
-		} else if position == 80 {
-			Board = Board[0:position] + character
+	if KnownEndGame {
+		if BoardWin[position:position+1] == character {
+			Message = "Performed move."
+			if position == 0 {
+				Board = character + Board[position+1:]
+			} else if position == 80 {
+				Board = Board[0:position] + character
+			} else {
+				Board = Board[0:position] + character + Board[position+1:]
+			}
 		} else {
-			Board = Board[0:position] + character + Board[position+1:]
+			Message = "Wrong move, try again."
+		}
+	} else {
+		// Do the same with a check instead
+		boardCopy := Board
+		if BoardInitial[position:position+1] == "_" {
+			if position == 0 {
+				Board = character + Board[position+1:]
+			} else if position == 80 {
+				Board = Board[0:position] + character
+			} else {
+				Board = Board[0:position] + character + Board[position+1:]
+			}
+		} else {
+			Message = "Wrong move, try again."
+			return
+		}
+		// Check if the boardstate is valid
+		_, validMove, err := haskellCall(2, Board)
+		if err != nil {
+			fmt.Println("Error checking boardstate: ", err)
+			Message = "Error checking move validity. Game is invalid, please restart the program."
+		}
+		if validMove {
+			Message = "Performed move."
+		} else {
+			Board = boardCopy
+			Message = "Wrong move, try again."
 		}
 	}
 }
@@ -163,10 +267,12 @@ func (m model) View() string {
 		}
 
 	}
-
 	// The footer
-	s += "     -----------   -----------   -----------  \n\nPress q to quit.\n"
-
+	s += "     -----------   -----------   -----------  |\n\nPress q to quit, press r to reset the board."
+	// Print the message
+	s += fmt.Sprintf("\n %s", Message)
+	// Reset the message
+	Message = "Awaiting move"
 	// Send the UI for rendering
 	return s
 }
