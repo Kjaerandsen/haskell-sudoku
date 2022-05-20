@@ -38,7 +38,7 @@ func main() {
 			"This program uses flags to run the different commands, the following flags are availablle:\n" +
 				"-help  : Outputs this message\n" +
 				"-board=x : Where x is the board you want to play on. Read left to right, line by line. With '_' for empty slots.\n" +
-				"For example: board=___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___")
+				"For example: -board=___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___")
 	}
 
 	if boardValue == "" {
