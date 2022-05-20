@@ -69,7 +69,8 @@ The code is based on the "Bubble Tea basics" tutorial found at https://github.co
 
 The Golang frontend has two valid arguments:
 
-- "-board": Works the same way as the corresponding argument in the Haskell program.
+- "-board": Works the same way as the corresponding argument in the Haskell program. But with an equal sign instead of space, for example: `board=___76_4__2_7___5181__52_3__68_1_9_4_54_8_2_69_7_3_6_25__6_15__7435___2_1__9_83___`.
+
 - "-help": Works the same way as the corresponding argument in the Haskell program.
 
 The Golang frontend is a less feature rich implementation of the sudoku game. It uses the haskell program as a backend which it runs with parameters to run the different relevant functions in Haskell (the functions "solve", "validateBoardState" and "checkWin").
