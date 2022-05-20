@@ -86,3 +86,12 @@ The Golang frontend is tested in the "Windows Terminal", with both the standard 
 ## Time tracking:
 1h planning the basic outline of the first version of the project. An auto-solver and a basic gameplay loop.
 30m planning game loop structure.
+4h 5m Main gameplay loop
+7h 40m Auto solver
+1h 20m Auto solver code cleanup and refactoring
+2h 5m Implementing a second difficulty
+1h 20m Haskell parameters
+7h 30m Golang frontend
+6h Other time tracking
+
+Total time spent: 30h 30m
